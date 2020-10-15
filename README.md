@@ -14,7 +14,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="http://agniutkarsh.com"><img src="https://avatars2.githubusercontent.com/u/30363000?v=4" width="100px;" alt=""/><br /><sub><b>Utkarsh Agnihotri</b></sub></a><br /><a href="#content-Zenix27" title="Content">🖋</a></td>
+    <td align="center"><a href="http://agniutkarsh.com"><img src="https://avatars2.githubusercontent.com/u/30363000?v=4" width="100px;" alt=""/><br /><sub><b>Utkarsh Agnihotri</b></sub></a><br /><a href="#content-Zenix27" title="Content">🖋</a> <a href="https://github.com/nitish-awasthi/Invertians-Archive/commits?author=Zenix27" title="Code">💻</a></td>
     <td align="center"><a href="http://www.skillerv3.online"><img src="https://avatars3.githubusercontent.com/u/52619165?v=4" width="100px;" alt=""/><br /><sub><b>Divyanshu Gupta</b></sub></a><br /><a href="#content-divyanshu799" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/subhamagrawal7"><img src="https://avatars0.githubusercontent.com/u/34346812?v=4" width="100px;" alt=""/><br /><sub><b>Subham Agrawal</b></sub></a><br /><a href="#content-subhamagrawal7" title="Content">🖋</a></td>
   </tr>
