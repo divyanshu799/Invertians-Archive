@@ -32,6 +32,15 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "satyam12345678",
+      "name": "Satyam Tripathi",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/50956927?v=4",
+      "profile": "https://github.com/satyam12345678",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
