@@ -1,0 +1,17 @@
+Mobile IP With Reverse Tunneling
+The previous description of Mobile IP assumes that the routing within the Internet is independent of the data packet's source address. However, intermediate routers might check for a topologically correct source address. If an intermediate router does check, you should set up a reverse tunnel. By setting up a reverse tunnel from the mobile node's care-of address to the home agent, you ensure a topologically correct source address for the IP data packet. A mobile node can request a reverse tunnel between its foreign agent and its home agent when the mobile node registers. A reverse tunnel is a tunnel that starts at the mobile node's care-of address and terminates at the home agent. The following illustration shows the Mobile IP topology that uses a reverse tunnel.
+Figure 1–4 Mobile IP With a Reverse Tunnel
+
+ 
+Limited Private Addresses Support
+Mobile nodes that have private addresses which are not globally routable through the Internet require reverse tunnels. Solaris Mobile IP supports only privately addressed mobile nodes. See Overview of the Solaris Mobile IP Implementation for the functions that Solaris Mobile IP does not support.
+Enterprises employ private addresses when external connectivity is not required. Private addresses are not routable through the Internet. When a mobile node has a private address, the mobile node can only communicate with a correspondent node through a reverse tunnel. The privately addressed correspondent node must belong to the same home agent's administrative domain. The following illustration shows a network topology with two privately addressed mobile nodes that use the same care-of address when registered to the same foreign agent.
+
+Figure 1–5 Privately Addressed Mobile Nodes Residing on the Same Foreign Network
+
+ 
+Because both privately addressed mobile nodes belong to the same administrative domain, the home agent knows how to route data packets between the two mobile nodes. Also, the foreign agent's care-of address and the home agent's IP address must be globally routable addresses.
+It is possible to have two privately addressed mobile nodes with the same IP address residing on the same foreign network. This situation is only possible when each mobile node has a different home agent. Also, this situation is only possible when each mobile node is on different advertising subnets of a single foreign agent. The following illustration shows a network topology that depicts this case.
+Figure 1–6 Privately Addressed Mobile Nodes Residing on Different Foreign Networks
+
+ 
