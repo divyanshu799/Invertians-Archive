@@ -14,7 +14,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="http://agniutkarsh.com"><img src="https://avatars2.githubusercontent.com/u/30363000?v=4" width="100px;" alt=""/><br /><sub><b>Utkarsh Agnihotri</b></sub></a><br /><a href="#content-Zenix27" title="Content">🖋</a></td>
+    <td align="center"><a href="http://agniutkarsh.com"><img src="https://avatars2.githubusercontent.com/u/30363000?v=4" width="100px;" alt=""/><br /><sub><b>Utkarsh Agnihotri</b></sub></a><br /><a href="#content-Zenix27" title="Content">🖋</a> <a href="https://github.com/nitish-awasthi/Invertians-Archive/commits?author=Zenix27" title="Code">💻</a></td>
   </tr>
 </table>
 
