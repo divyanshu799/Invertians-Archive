@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0051)http://williamstallings.com/Extras/OS-Notes/h1.html -->
+<!--Converted with LaTeX2HTML 97.1 (release) (July 13th, 1997)
+ by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippman, Marek Rouchal, Martin Wilck and others --><HTML><HEAD><TITLE>Operating Systems Lecture Notes Lecture 1 Overview and History</TITLE>
+<META 
+content="Operating Systems Lecture Notes Lecture 1 Overview and History&#10;" 
+name=description>
+<META content=h1 name=keywords>
+<META content=document name=resource-type>
+<META content=global name=distribution>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252"><LINK 
+href="Operating Systems Lecture Notes Lecture 1 Overview and History_files/h1.css" 
+rel=STYLESHEET>
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY>
+<P>
+<H1 align=center>Operating Systems Lecture Notes <BR>Lecture 1 <BR>Overview and 
+History </H1>
+<P align=center><STRONG>Martin C. Rinard</STRONG></P>
+<P align=center><STRONG></STRONG></P>
+<P align=left></P>
+<P>
+<UL>
+  <LI>What is an operating system? Hard to define precisely, because operating 
+  systems arose historically as people needed to solve problems associated with 
+  using computers. 
+  <LI>Much of operating system history driven by relative cost factors of 
+  hardware and people. Hardware started out fantastically expensive relative to 
+  people and the relative cost has been decreasing ever since. Relative costs 
+  drive the goals of the operating system. 
+  <UL>
+    <LI>In the beginning: <B>Expensive Hardware, Cheap People</B> Goal: maximize 
+    hardware utilization. 
+    <LI>Now: <B>Cheap Hardware, Expensive People</B> Goal: make it easy for 
+    people to use computer. </LI></UL>
+  <LI>In the early days of computer use, computers were huge machines that are 
+  expensive to buy, run and maintain. Computer used in single user, interactive 
+  mode. Programmers interact with the machine at a very low level - flick 
+  console switches, dump cards into card reader, etc. The interface is basically 
+  the raw hardware. 
+  <UL>
+    <LI>Problem: Code to manipulate external I/O devices. Is very complex, and 
+    is a major source of programming difficulty. 
+    <LI>Solution: Build a subroutine library (device drivers) to manage the 
+    interaction with the I/O devices. The library is loaded into the top of 
+    memory and stays there. This is the first example of something that would 
+    grow into an operating system. </LI></UL>
+  <LI>Because the machine is so expensive, it is important to keep it busy. 
+  <UL>
+    <LI>Problem: computer idles while programmer sets things up. Poor 
+    utilization of huge investment. 
+    <LI>Solution: Hire a specialized person to do setup. Faster than programmer, 
+    but still a lot slower than the machine. 
+    <LI>Solution: Build a batch monitor. Store jobs on a disk (spooling), have 
+    computer read them in one at a time and execute them. Big change in computer 
+    usage: debugging now done offline from print outs and memory dumps. No more 
+    instant feedback. 
+    <LI>Problem: At any given time, job is actively using either the CPU or an 
+    I/O device, and the rest of the machine is idle and therefore unutilized. 
+    <LI>Solution: Allow the job to overlap computation and I/O. Buffering and 
+    interrupt handling added to subroutine library. 
+    <LI>Problem: one job can't keep both CPU and I/O devices busy. (Have 
+    compute-bound jobs that tend to use only the CPU and I/O-bound jobs that 
+    tend to use only the I/O devices.) Get poor utilization either of CPU or I/O 
+    devices. 
+    <LI>Solution: multiprogramming - several jobs share system. Dynamically 
+    switch from one job to another when the running job does I/O. Big issue: 
+    protection. Don't want one job to affect the results of another. Memory 
+    protection and relocation added to hardware, OS must manage new hardware 
+    functionality. OS starts to become a significant software system. OS also 
+    starts to take up significant resources on its own. </LI></UL>
+  <LI>Phase shift: Computers become much cheaper. People costs become 
+  significant. 
+  <UL>
+    <LI>Issue: It becomes important to make computers easier to use and to 
+    improve the productivity of the people. One big productivity sink: having to 
+    wait for batch output (but is this really true?). So, it is important to run 
+    interactively. But computers are still so expensive that you can't buy one 
+    for every person. Solution: interactive timesharing. 
+    <LI>Problem: Old batch schedulers were designed to run a job for as long as 
+    it was utilizing the CPU effectively (in practice, until it tried to do some 
+    I/O). But now, people need reasonable response time from the computer. 
+    <LI>Solution: Preemptive scheduling. 
+    <LI>Problem: People need to have their data and programs around while they 
+    use the computer. 
+    <LI>Solution: Add file systems for quick access to data. Computer becomes a 
+    repository for data, and people don't have to use card decks or tapes to 
+    store their data. 
+    <LI>Problem: The boss logs in and gets terrible response time because the 
+    machine is overloaded. 
+    <LI>Solution: Prioritized scheduling. The boss gets more of the machine than 
+    the peons. But, CPU scheduling is just an example of resource allocation 
+    problems. The timeshared machine was full of limited resources (CPU time, 
+    disk space, physical memory space, etc.) and it became the responsibility of 
+    the OS to mediate the allocation of the resources. So, developed things like 
+    disk and physical memory quotas, etc. </LI></UL>Overall, time sharing was a 
+  success. However, it was a limited success. In practical terms, every 
+  timeshared computer became overloaded and the response time dropped to 
+  annoying or unacceptable levels. Hard-core hackers compensated by working at 
+  night, and we developed a generation of pasty-looking, unhealthy insomniacs 
+  addicted to caffeine. 
+  <LI>Computers become even cheaper. It becomes practical to give one computer 
+  to each user. Initial cost is very important in market. Minimal hardware (no 
+  networking or hard disk, very slow microprocessors and almost no memory) 
+  shipped with minimal OS (MS-DOS). Protection, security less of an issue. OS 
+  resource consumption becomes a big issue (computer only has 640K of memory). 
+  OS back to a shared subroutine library. 
+  <LI>Hardware becomes cheaper and users more sophisticated. People need to 
+  share data and information with other people. Computers become more 
+  information transfer, manipulation and storage devices rather than machines 
+  that perform arithmetic operations. Networking becomes very important, and as 
+  sharing becomes an important part of the experience so does security. 
+  Operating systems become more sophisticated. Start putting back features 
+  present in the old time sharing systems (OS/2, Windows NT, even Unix). 
+  <LI>Rise of network. Internet is a huge popular phenomenon and drives new ways 
+  of thinking about computing. Operating system is no longer interface to the 
+  lower level machine - people structure systems to contain layers of 
+  middleware. So, a Java API or something similar may be the primary thing 
+  people need, not a set of system calls. In fact, what the operating system is 
+  may become irrelevant as long as it supports the right set of middleware. 
+  <LI>Network computer. Concept of a box that gets all of its resources over the 
+  network. No local file system, just network interfaces to acquire all outside 
+  data. So have a slimmer version of OS. 
+  <LI>In the future, computers will become physically small and portable. 
+  Operating systems will have to deal with issues like disconnected operation 
+  and mobility. People will also start using information with a psuedo-real time 
+  component like voice and video. Operating systems will have to adjust to 
+  deliver acceptable performance for these new forms of data. 
+  <LI>What does a modern operating system do? 
+  <UL>
+    <LI><B>Provides Abstractions</B> Hardware has low-level physical resources 
+    with complicated, idiosyncratic interfaces. OS provides abstractions that 
+    present clean interfaces. Goal: make computer easier to use. Examples: 
+    Processes, Unbounded Memory, Files, Synchronization and Communication 
+    Mechanisms. 
+    <LI><B>Provides Standard Interface</B> Goal: portability. Unix runs on many 
+    very different computer systems. To a first approximation can port programs 
+    across systems with little effort. 
+    <LI><B>Mediates Resource Usage</B> Goal: allow multiple users to share 
+    resources fairly, efficiently, safely and securely. Examples: 
+    <UL>
+      <LI>Multiple processes share one processor. (preemptable resource) 
+      <LI>Multiple programs share one physical memory (preemptable resource). 
+      <LI>Multiple users and files share one disk. (non-preemptable resource) 
+      <LI>Multiple programs share a given amount of disk and network bandwidth 
+      (preemptable resource). </LI></UL>
+    <LI><B>Consumes Resources</B> Solaris takes up about 8Mbytes physical memory 
+    (or about $400). </LI></UL>
+  <LI>Abstractions often work well - for example, timesharing, virtual memory 
+  and hierarchical and networked file systems. But, may break down if stressed. 
+  Timesharing gives poor performance if too many users run compute-intensive 
+  jobs. Virtual memory breaks down if working set is too large (thrashing), or 
+  if there are too many large processes (machine runs out of swap space). 
+  Abstractions often fail for performance reasons. 
+  <LI>Abstractions also fail because they prevent programmer from controlling 
+  machine at desired level. Example: database systems often want to control 
+  movement of information between disk and physical memory, and the paging 
+  system can get in the way. More recently, existing OS schedulers fail to 
+  adequately support multimedia and parallel processing needs, causing poor 
+  performance. 
+  <LI>Concurrency and asynchrony make operating systems very complicated pieces 
+  of software. Operating systems are fundamentally non-deterministic and event 
+  driven. Can be difficult to construct (hundreds of person-years of effort) and 
+  impossible to completely debug. Examples of concurrency and asynchrony: 
+  <UL>
+    <LI>I/O devices run concurrently with CPU, interrupting CPU when done. 
+    <LI>On a multiprocessor multiple user processes execute in parallel. 
+    <LI>Multiple workstations execute concurrently and communicate by sending 
+    messages over a network. Protocol processing takes place asynchronously. 
+    </LI></UL>Operating systems are so large no one person understands whole 
+  system. Outlives any of its original builders. 
+  <LI>The major problem facing computer science today is how to build large, 
+  reliable software systems. Operating systems are one of very few examples of 
+  existing large software systems, and by studying operating systems we may 
+  learn lessons applicable to the construction of larger systems. </LI></UL>
+<P><SMALL>Permission is granted to copy and distribute this material for 
+educational purposes only, provided that the following credit line is included: 
+"Operating Systems Lecture Notes, Copyright 1997 Martin C. Rinard." Permission 
+is granted to alter and distribute this material provided that the following 
+credit line is included: "Adapted from Operating Systems Lecture Notes, 
+Copyright 1997 Martin C. Rinard." </SMALL><BR>
+<HR>
+<BR>
+<HR>
+
+<ADDRESS><I>Martin Rinard, osnotes@cag.lcs.mit.edu, 
+www.cag.lcs.mit.edu/~rinard</I> <BR><I>8/25/1998</I> </ADDRESS></BODY></HTML>

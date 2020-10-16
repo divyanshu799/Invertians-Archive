@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0051)http://williamstallings.com/Extras/OS-Notes/h9.html -->
+<!--Converted with LaTeX2HTML 97.1 (release) (July 13th, 1997)
+ by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippman, Marek Rouchal, Martin Wilck and others --><HTML><HEAD><TITLE>Operating Systems Lecture Notes Lecture 9 Introduction to Paging</TITLE>
+<META 
+content="Operating Systems Lecture Notes Lecture 9 Introduction to Paging&#10;" 
+name=description>
+<META content=h9 name=keywords>
+<META content=document name=resource-type>
+<META content=global name=distribution>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252"><LINK 
+href="Operating Systems Lecture Notes Lecture 9 Introduction to Paging_files/h9.css" 
+rel=STYLESHEET>
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY>
+<P>
+<H1 align=center>Operating Systems Lecture Notes <BR>Lecture 9 <BR>Introduction 
+to Paging </H1>
+<P align=center><STRONG>Martin C. Rinard</STRONG></P>
+<P align=center><STRONG></STRONG></P>
+<P align=left></P>
+<P>
+<UL>
+  <LI>Basic idea: allocate physical memory to processes in fixed size chunks 
+  called page frames. Present abstraction to application of a single linear 
+  address space. Inside machine, break address space of application up into 
+  fixed size chunks called pages. Pages and page frames are same size. Store 
+  pages in page frames. When process generates an address, dynamically translate 
+  to the physical page frame which holds data for that page. 
+  <LI>So, a virtual address now consists of two pieces: a page number and an 
+  offset within that page. Page sizes are typically powers of 2; this simplifies 
+  extraction of page numbers and offsets. To access a piece of data at a given 
+  address, system automatically does the following: 
+  <UL>
+    <LI>Extracts page number. 
+    <LI>Extracts offset. 
+    <LI>Translate page number to physical page frame id. 
+    <LI>Accesses data at offset in physical page frame. </LI></UL>
+  <LI>How does system perform translation? Simplest solution: use a page table. 
+  Page table is a linear array indexed by virtual page number that gives the 
+  physical page frame that contains that page. What is lookup process? 
+  <UL>
+    <LI>Extract page number. 
+    <LI>Extract offset. 
+    <LI>Check that page number is within address space of process. 
+    <LI>Look up page number in page table. 
+    <LI>Add offset to resulting physical page number 
+    <LI>Access memory location. </LI></UL>Problem: for each memory access that 
+  processor generates, must now generate two physical memory accesses. 
+  <LI>Speed up the lookup problem with a cache. Store most recent page lookup 
+  values in TLB. TLB design options: fully associative, direct mapped, set 
+  associative, etc. Can make direct mapped larger for a given amount of circuit 
+  space. 
+  <LI>How does lookup work now? 
+  <UL>
+    <LI>Extract page number. 
+    <LI>Extract offset. 
+    <LI>Look up page number in TLB. 
+    <LI>If there, add offset to physical page number and access memory location. 
+
+    <LI>Otherwise, trap to OS. OS performs check, looks up physical page number, 
+    and loads translation into TLB. Restarts the instruction. </LI></UL>
+  <LI>Like any cache, TLB can work well, or it can work poorly. What is a good 
+  and bad case for a direct mapped TLB? What about fully associative TLBs, or 
+  set associative TLB? 
+  <LI>Fixed size allocation of physical memory in page frames dramatically 
+  simplifies allocation algorithm. OS can just keep track of free and used pages 
+  and allocate free pages when a process needs memory. There is no fragmentation 
+  of physical memory into smaller and smaller allocatable chunks. 
+  <LI>But, are still pieces of memory that are unused. What happens if a 
+  program's address space does not end on a page boundary? Rest of page goes 
+  unused. Book calls this internal fragmentation. 
+  <LI>How do processes share memory? The OS makes their page tables point to the 
+  same physical page frames. Useful for fast interprocess communication 
+  mechanisms. This is very nice because it allows transparent sharing at speed. 
+  <LI>What about protection? There are a variety of protections: 
+  <UL>
+    <LI>Preventing one process from reading or writing another process' memory. 
+    <LI>Preventing one process from reading another process' memory. 
+    <LI>Preventing a process from reading or writing some of its own memory. 
+    <LI>Preventing a process from reading some of its own memory. </LI></UL>How is 
+  this protection integrated into the above scheme? 
+  <LI>Preventing a process from reading or writing memory: OS refuses to 
+  establish a mapping from virtual address space to physical page frame 
+  containing the protected memory. When program attempts to access this memory, 
+  OS will typically generate a fault. If user process catches the fault, can 
+  take action to fix things up. 
+  <LI>Preventing a process from writing memory, but allowing a process to read 
+  memory. OS sets a write protect bit in the TLB entry. If process attempts to 
+  write the memory, OS generates a fault. But, reads go through just fine. 
+  <LI>Virtual Memory Introduction. 
+  <LI>When a segmented system needed more memory, it swapped segments out to 
+  disk and then swapped them back in again when necessary. Page based systems 
+  can do something similar on a page basis. 
+  <LI>Basic idea: when OS needs to a physical page frame to store a page, and 
+  there are none free, it can select one page and store it out to disk. It can 
+  then use the newly free page frame for the new page. Some pragmatic 
+  considerations: 
+  <UL>
+    <LI>In practice, it makes sense to keep a few free page frames. When number 
+    of free pages drops below this threshold, choose a page and store it out. 
+    This way, can overlap I/O required to store out a page with computation that 
+    uses the newly allocated page frame. 
+    <LI>In practice the page frame size usually equals the disk block size. Why? 
+
+    <LI>Do you need to allocate disk space for a virtual page before you swap it 
+    out? (Not if always keep one page frame free) Why did BSD do this? At some 
+    point OS must refuse to allocate a process more memory because has no swap 
+    space. When can this happen? (malloc, stack extension, new process 
+    creation). </LI></UL>
+  <LI>When process tries to access paged out memory, OS must run off to the 
+  disk, find a free page frame, then read page back off of disk into the page 
+  frame and restart process. 
+  <LI>What is advantage of virtual memory/paging? 
+  <UL>
+    <LI>Can run programs whose virtual address space is larger than physical 
+    memory. In effect, one process shares physical memory with itself. 
+    <LI>Can also flexibly share machine between processes whose total address 
+    space sizes exceed the physical memory size. 
+    <LI>Supports a wide range of user-level stuff - See Li and Appel paper. 
+  </LI></UL>
+  <LI>Disadvantages of VM/paging: extra resource consumption. 
+  <UL>
+    <LI>Memory overhead for storing page tables. In extreme cases, page table 
+    may take up a significant portion of virtual memory. One Solution: page the 
+    page table. Others: go to a more complicated data structure for storing 
+    virtual to physical translations. 
+    <LI>Translation overhead. </LI></UL></LI></UL>
+<P><SMALL>Permission is granted to copy and distribute this material for 
+educational purposes only, provided that the following credit line is included: 
+"Operating Systems Lecture Notes, Copyright 1997 Martin C. Rinard." Permission 
+is granted to alter and distribute this material provided that the following 
+credit line is included: "Adapted from Operating Systems Lecture Notes, 
+Copyright 1997 Martin C. Rinard." </SMALL>
+<P><BR>
+<HR>
+<BR>
+<HR>
+
+<ADDRESS><I>Martin Rinard, osnotes@cag.lcs.mit.edu, 
+www.cag.lcs.mit.edu/~rinard</I> <BR><I>8/25/1998</I> </ADDRESS></BODY></HTML>

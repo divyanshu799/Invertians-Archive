@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://williamstallings.com/Extras/OS-Notes/h16.html -->
+<!--Converted with LaTeX2HTML 97.1 (release) (July 13th, 1997)
+ by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippman, Marek Rouchal, Martin Wilck and others --><HTML><HEAD><TITLE>Operating Systems Lecture Notes Lecture 16 Disk Scheduling</TITLE>
+<META content="Operating Systems Lecture Notes Lecture 16 Disk Scheduling " 
+name=description>
+<META content=h16 name=keywords>
+<META content=document name=resource-type>
+<META content=global name=distribution>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252"><LINK 
+href="Operating Systems Lecture Notes Lecture 16 Disk Scheduling_files/h16.css" 
+rel=STYLESHEET>
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY>
+<P>
+<H1 align=center><BIG>Operating Systems Lecture Notes <BR>Lecture 16 <BR>Disk 
+Scheduling </BIG></H1>
+<P align=center><STRONG>Martin C. Rinard</STRONG></P>
+<P align=center><STRONG></STRONG></P>
+<P align=left></P>
+<P>
+<UL>
+  <LI>The processes running on a machine may have multiple outstanding requests 
+  for data from the disk. In what order should requests be served? 
+  <LI>First-Come-First-Served. This is how nachos works right now. As processes 
+  arrive, they queue up for the disk and get their requests served in order. In 
+  current version of nachos, queueing happens at the mutex lock. 
+  <LI>What is wrong with FCFS? May have long swings from one part of disk to 
+  another. It makes sense to service outstanding requests from adjacent parts of 
+  disk sequentially. 
+  <LI>Shortest-Seek-Time-First. Disk scheduler looks at all outstanding disk 
+  requests, and services the one closest to where the disk head currently is. 
+  Sort of like Shortest-Job-First task scheduling. 
+  <LI>What is the problem with SSTF? Starvation. A request for a remote part of 
+  the disk may never get serviced. 
+  <LI>SCAN algorithm. Head goes from one end of disk to another. Reverses 
+  direction when hits end of disk and goes back the other way. Eliminates 
+  starvation problem. Minor variant: C-SCAN, which goes all the way back to 
+  front of disk when it hits the end, sort of like a raster scan in a display. 
+  <LI>LOOK algorithm. Like scan, but reverse direction when hit the last request 
+  in the current direction. C-LOOK is the circular variant of LOOK. What most 
+  systems use in practice. 
+  <P></P></LI></UL>
+<P><SMALL>Permission is granted to copy and distribute this material for 
+educational purposes only, provided that the following credit line is included: 
+"Operating Systems Lecture Notes, Copyright 1997 Martin C. Rinard." Permission 
+is granted to alter and distribute this material provided that the following 
+credit line is included: "Adapted from Operating Systems Lecture Notes, 
+Copyright 1997 Martin C. Rinard." </SMALL>
+<P><BR>
+<HR>
+<BR>
+<HR>
+
+<ADDRESS><I>Martin Rinard, osnotes@cag.lcs.mit.edu, 
+www.cag.lcs.mit.edu/~rinard</I> <BR><I>8/25/1998</I> </ADDRESS></BODY></HTML>

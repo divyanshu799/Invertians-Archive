@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://williamstallings.com/Extras/OS-Notes/h15.html -->
+<!--Converted with LaTeX2HTML 97.1 (release) (July 13th, 1997)
+ by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippman, Marek Rouchal, Martin Wilck and others --><HTML><HEAD><TITLE>Operating Systems Lecture Notes Lecture 15 Segments</TITLE>
+<META content="Operating Systems Lecture Notes Lecture 15 Segments " 
+name=description>
+<META content=h15 name=keywords>
+<META content=document name=resource-type>
+<META content=global name=distribution>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252"><LINK 
+href="Operating Systems Lecture Notes Lecture 15 Segments_files/h15.css" 
+rel=STYLESHEET>
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY>
+<P>
+<H1 align=center><BIG>Operating Systems Lecture Notes <BR>Lecture 15 
+<BR>Segments </BIG></H1>
+<P align=center><STRONG>Martin C. Rinard</STRONG></P>
+<P align=center><STRONG></STRONG></P>
+<P align=left></P>
+<P>
+<UL>
+  <LI>Programs need to share data on a controlled basis. Examples: all processes 
+  should use same compiler. Two processes may wish to share part of their data. 
+  <LI>Program needs to treat different pieces of its memory differently. 
+  Examples: process should be able to execute its code, but not its data. 
+  Process should be able to write its data, but not its code. Process should 
+  share part of memory with other processes, but not all of memory. Some memory 
+  may need to be exported read-only, other memory exported read/write. 
+  <LI>Mechanism to support treating different pieces of address space 
+  separately: segments. Program's memory is structured as a set of segments. 
+  Each segment is a variable-sized chunk of memory. An address is a 
+  segment,offset pair. Each segment has protection bits that specify which kind 
+  of accesses can be performed. Typically will have something like read, write 
+  and execute bits. 
+  <LI>Where are segments stored in physical memory? One alternative: each 
+  segment is stored contiguously in physical memory. Each segment has a base and 
+  a bound. So, each process has a segment table giving the base, bounds and 
+  protection bits for each segment. 
+  <LI>How does program generate an address containing a segment identifier? 
+  There are several ways: 
+  <UL>
+    <LI>Top bits of address specify segment, low bits specify offset. 
+    <LI>Instruction implicity specifies segment. I.E. code vs. data vs. stack. 
+    <LI>Current data segment stored in a register. 
+    <LI>Store several segment ids in registers; instruction specifies which one. 
+    </LI></UL>
+  <LI>What does address translation mechanism look like now? 
+  <UL>
+    <LI>Find base and bound for segment id. 
+    <LI>Add base to offset. 
+    <LI>Check that offset &lt; bound. 
+    <LI>Check that access permissions match actual access. 
+    <LI>Reference the generated physical address. </LI></UL>How can this be fast 
+  enough? Several parts of strategy: 
+  <UL>
+    <LI>Segment table cache stored in fast memory. Typically fully associative. 
+    <LI>Full segment table stored in physical memory. If the segment id misses 
+    in the cache, get from physical memory and reload the cache. </LI></UL>
+  <LI>OS may need to reference data from any process. How is this done? One way: 
+  OS runs with address translation turned off. Reserve certain parts of physical 
+  memory to hold OS data structures (buffers, PCB's, etc.). 
+  <LI>How do user and OS communicate? Via shared memory. But, OS must manually 
+  apply translation any time user program gives it a pointer to data. Example: 
+  Exec(file) system call in nachos. 
+  <LI>What must OS do to manage segments? 
+  <UL>
+    <LI>Keep copy of segment table in PCB. 
+    <LI>When create process, allocate space for segments, fill in base and 
+    bounds registers. 
+    <LI>When switch contexts, switch segment information state in hardware. 
+    Examples: may invalidate segment id cache. </LI></UL>
+  <LI>What about memory management? Segments come in variable sized chunks, so 
+  must allocate physical memory in variable sized chunks. Can use a variety of 
+  heuristics: first fit, best fit, etc. All suffer from fragmentation (external 
+  fragmentation). 
+  <LI>What to do when must allocate a segment and it doesn't fit given segments 
+  that are already resident? Have several options: 
+  <UL>
+    <LI>Can compact segments. Copy segments to contiguous physical memory 
+    locations so that small holes are collected into one big hole. Notice that 
+    this changes the physical memory locations of segment's data. What must OS 
+    do to implement new translation? 
+    <LI>Can push segments out to disk. But, must provide a mechanism to detect a 
+    reference to the swapped segment. When the reference happens, will then 
+    reload from disk. </LI></UL>
+  <LI>What happens when must enlarge a segment? (This can happen if user needs 
+  to dynamically allocate more memory). If lucky, there is a hole above the 
+  segment and can just increment bound for that segment. If not, maybe can move 
+  to a larger hole where the new size fits. If not, may have to compact or swap 
+  out segments. 
+  <LI>Protection: How does one process ensure that no other process can access 
+  its memory? Make sure OS never creates a segment table entry that points to 
+  same physical memory. 
+  <LI>Sharing: How do processes share memory? Typically at segment level. 
+  Segment tables of the two processes point to the same physical memory. 
+  <LI>What about protection for a shared segment? What if one process only wants 
+  other processes to read segment? Typically have access bits in segment table 
+  and OS can make segment read only in one process. 
+  <LI>Naming: Processes must name segments created and manipulated by other 
+  processes. Typically have a name space for segments; processes export segments 
+  for other processes to use under given names. In Multics, had a tree 
+  structured segment name space, and segments were persistent across process 
+  invocations. 
+  <LI>Efficiency: It is efficient. The segment table lookup typically does not 
+  impose too much time overhead, and segment tables tend to be small with not 
+  much memory overhead. 
+  <LI>Granularity: allows processes to specify which memory they share with 
+  other processes. But if whole segment is either resident or not, limits the 
+  flexibility of OS memory allocation. 
+  <LI>Advantages of segmentation: 
+  <UL>
+    <LI>Can share data in a controlled way with appropriate protection 
+    mechanisms. 
+    <LI>Can move segments independently. 
+    <LI>Can put segments on disk independently. 
+    <LI>Is a nice abstraction for sharing data. In fact, abstraction is often 
+    preserved as a software concept in systems that use other hardware 
+    mechanisms to share data. </LI></UL>
+  <LI>Problems with segmentation: 
+  <UL>
+    <LI>Fragmentation and complicated memory management. 
+    <LI>Whole segment must be resident or not. Allocation granularity may be too 
+    large for efficient memory utilization. Example: have a big segment but only 
+    access a small part of it for a long time. Waste memory used to hold the 
+    rest. 
+    <LI>Potentially bad address space utilization if have fixed size segment id 
+    field in addresses. If have few segments, waste bits in segment field. If 
+    have small segments, waste bits in offset field. 
+    <LI>Must be sure to make offset field large enough. See 8086. 
+</LI></UL></LI></UL>
+<P><SMALL>Permission is granted to copy and distribute this material for 
+educational purposes only, provided that the following credit line is included: 
+"Operating Systems Lecture Notes, Copyright 1997 Martin C. Rinard." Permission 
+is granted to alter and distribute this material provided that the following 
+credit line is included: "Adapted from Operating Systems Lecture Notes, 
+Copyright 1997 Martin C. Rinard." </SMALL>
+<P><BR>
+<HR>
+<BR>
+<HR>
+
+<ADDRESS><I>Martin Rinard, osnotes@cag.lcs.mit.edu, 
+www.cag.lcs.mit.edu/~rinard</I> <BR><I>8/25/1998</I> </ADDRESS></BODY></HTML>
