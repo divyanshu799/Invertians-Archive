@@ -1,6 +1,6 @@
 # Welcome Invertians 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 ### Invertians-Archive
 Admit it, we all have a secret place where we store our notes, books, codes etc. But wouldn't it be easier to just have it all in one place? A Virtual Library for all Invertians where we can contribute and find material for all courses.
@@ -19,6 +19,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/subhamagrawal7"><img src="https://avatars0.githubusercontent.com/u/34346812?v=4" width="100px;" alt=""/><br /><sub><b>Subham Agrawal</b></sub></a><br /><a href="#content-subhamagrawal7" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/satyam12345678"><img src="https://avatars2.githubusercontent.com/u/50956927?v=4" width="100px;" alt=""/><br /><sub><b>Satyam Tripathi</b></sub></a><br /><a href="#content-satyam12345678" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/rkraghavkh18"><img src="https://avatars3.githubusercontent.com/u/57208426?v=4" width="100px;" alt=""/><br /><sub><b>Raghav Khandelwal</b></sub></a><br /><a href="#content-rkraghavkh18" title="Content">🖋</a></td>
+    <td align="center"><a href="https://github.com/shalinipal69"><img src="https://avatars1.githubusercontent.com/u/63445999?v=4" width="100px;" alt=""/><br /><sub><b>shalinipal69</b></sub></a><br /><a href="#content-shalinipal69" title="Content">🖋</a></td>
   </tr>
 </table>
 
