@@ -1,9 +1,9 @@
-# Welcome Invertians 
+# Welcome Contributors 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 ### Invertians-Archive
-Admit it, we all have a secret place where we store our notes, books, codes etc. But wouldn't it be easier to just have it all in one place? A Virtual Library for all Invertians where we can contribute and find material for all courses.
+Admit it, we all have a secret place where we store our notes, books, codes etc. But wouldn't it be easier to just have it all in one place? A Virtual Library for all students where we can contribute and find material for all courses.
 
 ## Contributors ✨
 
