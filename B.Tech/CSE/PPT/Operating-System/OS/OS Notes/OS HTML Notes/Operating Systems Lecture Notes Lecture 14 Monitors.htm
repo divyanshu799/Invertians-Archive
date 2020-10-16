@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://williamstallings.com/Extras/OS-Notes/h14.html -->
+<!--Converted with LaTeX2HTML 97.1 (release) (July 13th, 1997)
+ by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippman, Marek Rouchal, Martin Wilck and others --><HTML><HEAD><TITLE>Operating Systems Lecture Notes Lecture 14 Monitors</TITLE>
+<META content="Operating Systems Lecture Notes Lecture 14 Monitors&#10;" 
+name=description>
+<META content=h14 name=keywords>
+<META content=document name=resource-type>
+<META content=global name=distribution>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252"><LINK 
+href="Operating Systems Lecture Notes Lecture 14 Monitors_files/h14.css" 
+rel=STYLESHEET>
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY>
+<P>
+<H1 align=center>Operating Systems Lecture Notes <BR>Lecture 14 <BR>Monitors 
+</H1>
+<P align=center><STRONG>Martin C. Rinard</STRONG></P>
+<P align=center><STRONG></STRONG></P>
+<P align=left></P>
+<P>
+<UL>
+  <LI>Monitors: A high-level data abstraction tool that automatically generates 
+  atomic operations on a given data structure. A monitor has: 
+  <UL>
+    <LI>Shared data. 
+    <LI>A set of atomic operations on that data. 
+    <LI>A set of condition variables. </LI></UL>
+  <LI>Monitors can be imbedded in a programming language: Mesa/Cedar from Xerox 
+  PARC. 
+  <LI>Typical implementation: each monitor has one lock. Acquire lock when begin 
+  a monitor operation, and Release lock when operation finishes. Optimization: 
+  reader/writer locks. Statically identify operations that only read data, then 
+  allow these read-only operations to go concurrently. Writers get mutual 
+  exclusion with respect to other writers and to readers. Standard 
+  synchronization mechanism for accessing shared data. 
+  <LI>Advantages: reduces probability of error (never forget to Acquire or 
+  Release the lock), biases programmer to think about the system in a certain 
+  way (is not ideologically neutral). Trend is away from encapsulated high-level 
+  operations such as monitors toward more general purpose but lower level 
+  synchronization operations. 
+  <LI>Bounded buffer using monitors and signals 
+  <UL>
+    <LI><B>Shared State</B> <CODE>data[10]</CODE> - a buffer holding produced 
+    data. <CODE>num</CODE> - tells how many produced data items there are in the 
+    buffer. 
+    <LI><B>Atomic Operations</B> <CODE>Produce(v)</CODE> called when producer 
+    produces data item <CODE>v</CODE>. <CODE>Consume(v)</CODE> called when 
+    consumer is ready to consume a data item. Consumed item put into 
+    <CODE>v</CODE>. 
+    <LI><B>Condition Variables</B> <CODE>bufferAvail</CODE> - signalled when a 
+    buffer becomes available. <CODE>dataAvail</CODE> - signalled when data 
+    becomes available. </LI></UL><PRE>monitor { 
+  Condition *bufferAvail, *dataAvail;
+  int num = 0;
+  int data[10];
+
+  Produce(v) { 
+    while (num == 10) { /* Mesa semantics */
+      bufferAvail-&gt;Wait();  
+    }
+    put v into data array
+    num++;
+    dataAvail-&gt;Signal(); /* must always do this? */
+                       /* can replace with broadcast? */
+  }
+  Consume(v) { 
+    while (num == 0) { /* Mesa Semantics */
+      dataAvail-&gt;Wait();
+    } 
+    put next data array value into v
+    num--; 
+    bufferAvail-&gt;Signal(); /* must always do this? */
+                         /* can replace with broadcast? */
+  }
+}
+</PRE>
+  <LI>The best way to understand monitors is that there is a syntactic 
+  transformation that inserts the lock operations. <PRE>  Condition *bufferAvail, *dataAvail;
+  int num = 0;
+  int data[10];
+  Lock *monitorLock;
+
+  Produce(v) { 
+    monitorLock-&gt;Acquire(); /* Acquire monitor lock - makes operation atomic */
+    while (num == 10) { /* Mesa semantics */
+      bufferAvail-&gt;Wait(monitorLock);  
+    }
+    put v into data array
+    num++;
+    dataAvail-&gt;Signal(monitorLock); /* must always do this? */
+                       /* can replace with broadcast? */
+    monitorLock-&gt;Release(); /* Release monitor lock after perform operation */
+  }
+  Consume(v) { 
+    monitorLock-&gt;Acquire(); /* Acquire monitor lock - makes operation atomic */
+    while (num == 0) { /* Mesa Semantics */
+      dataAvail-&gt;Wait(monitorLock);
+    } 
+    put next data array value into v
+    num--; 
+    bufferAvail-&gt;Signal(monitorLock); /* must always do this? */
+                         /* can replace with broadcast? */
+    monitorLock-&gt;Release(); /* Release monitor lock after perform operation */
+  }
+}
+</PRE>
+  <P></P></LI></UL>
+<P><SMALL>Permission is granted to copy and distribute this material for 
+educational purposes only, provided that the following credit line is included: 
+"Operating Systems Lecture Notes, Copyright 1997 Martin C. Rinard." Permission 
+is granted to alter and distribute this material provided that the following 
+credit line is included: "Adapted from Operating Systems Lecture Notes, 
+Copyright 1997 Martin C. Rinard." </SMALL>
+<P><BR>
+<HR>
+<BR>
+<HR>
+
+<ADDRESS><I>Martin Rinard, osnotes@cag.lcs.mit.edu, 
+www.cag.lcs.mit.edu/~rinard</I> <BR><I>8/25/1998</I> </ADDRESS></BODY></HTML>

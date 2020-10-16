@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0051)http://williamstallings.com/Extras/OS-Notes/h4.html -->
+<!--Converted with LaTeX2HTML 97.1 (release) (July 13th, 1997)
+ by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippman, Marek Rouchal, Martin Wilck and others --><HTML><HEAD><TITLE>Operating Systems Lecture Notes Lecture 4 Deadlock</TITLE>
+<META content="Operating Systems Lecture Notes Lecture 4 Deadlock&#10;" 
+name=description>
+<META content=h4 name=keywords>
+<META content=document name=resource-type>
+<META content=global name=distribution>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252"><LINK 
+href="Operating Systems Lecture Notes Lecture 4 Deadlock_files/h4.css" 
+rel=STYLESHEET>
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY>
+<P>
+<H1 align=center>Operating Systems Lecture Notes <BR>Lecture 4 <BR>Deadlock 
+</H1>
+<P align=center><STRONG>Martin C. Rinard</STRONG></P>
+<P align=center><STRONG></STRONG></P>
+<P align=left></P>
+<P>
+<UL>
+  <LI>You may need to write code that acquires more than one lock. This opens up 
+  the possibility of deadlock. Consider the following piece of code: <PRE>Lock *l1, *l2;
+void p() { 
+  l1-&gt;Acquire();
+  l2-&gt;Acquire();
+  code that manipulates data that l1 and l2 protect
+  l2-&gt;Release();
+  l1-&gt;Release();
+}
+void q() {
+  l2-&gt;Acquire();
+  l1-&gt;Acquire();
+  code that manipulates data that l1 and l2 protect
+  l1-&gt;Release();
+  l2-&gt;Release();
+}
+</PRE>If <TT>p</TT> and <TT>q</TT> execute concurrently, consider what may 
+  happen. First, <TT>p</TT> acquires <TT>l1</TT> and <TT>q</TT> acquires 
+  <TT>l2</TT>. Then, <TT>p</TT> waits to acquire <TT>l2</TT> and <TT>q</TT> 
+  waits to acquire <TT>l1</TT>. How long will they wait? Forever. 
+  <LI>This case is called deadlock. What are conditions for deadlock? 
+  <UL>
+    <LI>Mutual Exclusion: Only one thread can hold lock at a time. 
+    <LI>Hold and Wait: At least one thread holds a lock and is waiting for 
+    another process to release a lock. 
+    <LI>No preemption: Only the process holding the lock can release it. 
+    <LI>Circular Wait: There is a set <I>t<SUB>1</SUB></I>, ..., 
+    <I>t</I><SUB><I>n</I></SUB> such that <I>t<SUB>1</SUB></I> is waiting for a 
+    lock held by <I>t<SUB>2</SUB></I>, ..., <I>t</I><SUB><I>n</I></SUB> is 
+    waiting for a lock held by <I>t<SUB>1</SUB></I>. </LI></UL>
+  <LI>How can <TT>p</TT> and <TT>q</TT> avoid deadlock? Order the locks, and 
+  always acquire the locks in that order. Eliminates the circular wait 
+  condition. 
+  <LI>Occasionally you may need to write code that needs to acquire locks in 
+  different orders. Here is what to do in this situation. 
+  <UL>
+    <LI>First, most locking abstractions offer an operation that tries to 
+    acquire the lock but returns if it cannot. We will call this operation 
+    <CODE>TryAcquire</CODE>. Use this operation to try to acquire the lock that 
+    you need to acquire out of order. 
+    <LI>If the operation succeeds, fine. Once you've got the lock, there is no 
+    problem. 
+    <LI>If the operation fails, your code will need to release all locks that 
+    come after the lock you are trying to acquire. Make sure the associated data 
+    structures are in a state where you can release the locks without crashing 
+    the system. 
+    <LI>Release all of the locks that come after the lock you are trying to 
+    acquire, then reacquire all of the locks in the right order. When the code 
+    resumes, bear in mind that the data structures might have changed between 
+    the time when you released and reacquired the lock. </LI></UL>
+  <LI>Here is an example. <PRE>int d1, d2;
+// The standard acquisition order for these two locks
+// is l1, l2.
+Lock *l1, // protects d1 
+     *l2; // protects d2
+// Decrements d2, and if the result is 0, increments d1
+void increment() {
+  l2-&gt;Acquire();
+  int t = d2;
+  t--;
+  if (t == 0) { 
+    if (l1-&gt;TryAcquire()) {
+      d1++;
+    } else { 
+      // Any modifications to d2 go here - in this case none
+      l2-&gt;Release();
+      l1-&gt;Acquire();
+      l2-&gt;Acquire();
+      t = d2;
+      t--;
+      // some other thread may have changed d2 - must recheck it
+      if (t == 0) { 
+        d1++;
+      }
+    }
+    l1-&gt;Release();
+  }
+  d2 = t;
+  l2-&gt;Release();
+}
+</PRE>This example is somewhat contrived, but you will recognize the situation 
+  when it occurs. 
+  <LI>There is a generalization of the deadlock problem to situations in which 
+  processes need multiple resources, and the hardware may have multiple kinds of 
+  each resource - two printers, etc. Seems kind of like a batch model - 
+  processes request resources, then system schedules process to run when 
+  resources are available. 
+  <LI>In this model, processes issue requests to OS for resources, and OS 
+  decides who gets which resource when. A lot of theory built up to handle this 
+  situation. 
+  <LI>Process first requests a resource, the OS issues it and the process uses 
+  the resource, then the process releases the resource back to the OS. 
+  <LI>Reason about resource allocation using resource allocation graph. Each 
+  resource is represented with a box, each process with a circle, and the 
+  individual instances of the resources with dots in the boxes. Arrows go from 
+  processes to resource boxes if the process is waiting for the resource. Arrows 
+  go from dots in resource box to processes if the process holds that instance 
+  of the resource. See Fig. 7.1. 
+  <LI>If graph contains no cycles, is no deadlock. If has a cycle, may or may 
+  not have deadlock. See Fig. 7.2, 7.3. 
+  <LI>System can either 
+  <UL>
+    <LI>Restrict the way in which processes will request resources to prevent 
+    deadlock. 
+    <LI>Require processes to give advance information about which resources they 
+    will require, then use algorithms that schedule the processes in a way that 
+    avoids deadlock. 
+    <LI>Detect and eliminate deadlock when it occurs. </LI></UL>
+  <LI>First consider prevention. Look at the deadlock conditions listed above. 
+  <UL>
+    <LI>Mutual Exclusion - To eliminate mutual exclusion, allow everybody to use 
+    the resource immediately if they want to. Unrealistic in general - do you 
+    want your printer output interleaved with someone elses? 
+    <LI>Hold and Wait. To prevent hold and wait, ensure that when a process 
+    requests resources, does not hold any other resources. Either asks for all 
+    resources before executes, or dynamically asks for resources in chunks as 
+    needed, then releases all resources before asking for more. Two problems - 
+    processes may hold but not use resources for a long time because they will 
+    eventually hold them. Also, may have starvation. If a process asks for lots 
+    of resources, may never run because other processes always hold some subset 
+    of the resources. 
+    <LI>Circular Wait. To prevent circular wait, order resources and require 
+    processes to request resources in that order. </LI></UL>
+  <LI>Deadlock avoidance. Simplest algorithm - each process tells max number of 
+  resources it will ever need. As process runs, it requests resources but never 
+  exceeds max number of resources. System schedules processes and allocates 
+  resoures in a way that ensures that no deadlock results. 
+  <LI>Example: system has 12 tape drives. System currently running P0 needs max 
+  10 has 5, P1 needs max 4 has 2, P2 needs max 9 has 2. 
+  <LI>Can system prevent deadlock even if all processes request the max? Well, 
+  right now system has 3 free tape drives. If P1 runs first and completes, it 
+  will have 5 free tape drives. P0 can run to completion with those 5 free tape 
+  drives even if it requests max. Then P2 can complete. So, this schedule will 
+  execute without deadlock. 
+  <LI>If P2 requests two more tape drives, can system give it the drives? No, 
+  because cannot be sure it can run all jobs to completion with only 1 free 
+  drive. So, system must not give P2 2 more tape drives until P1 finishes. If P2 
+  asks for 2 tape drives, system suspends P2 until P1 finishes. 
+  <LI>Concept: Safe Sequence. Is an ordering of processes such that all 
+  processes can execute to completion in that order even if all request maximum 
+  resources. Concept: Safe State - a state in which there exists a safe 
+  sequence. Deadlock avoidance algorithms always ensure that system stays in a 
+  safe state. 
+  <LI>How can you figure out if a system is in a safe state? Given the current 
+  and maximum allocation, find a safe sequence. System must maintain some 
+  information about the resources and how they are used. See OSC 7.5.3. <PRE>Avail[j] = number of resource j available
+Max[i,j] = max number of resource j that process i will use
+Alloc[i,j] = number of resource j that process i currently has
+Need[i,j] = Max[i,j] - Alloc[i,j]
+</PRE>
+  <LI>Notation: <CODE>A&lt;=B</CODE> if for all processes <CODE>i</CODE>, 
+  <CODE>A[i]&lt;=B[i]</CODE>. 
+  <LI>Safety Algorithm: will try to find a safe sequence. Simulate evolution of 
+  system over time under worst case assumptions of resource demands. <PRE>1: Work = Avail;
+   Finish[i] = False for all i;
+2: Find i such that Finish[i] = False and Need[i] &lt;= Work
+   If no such i exists, goto 4
+3: Work = Work + Alloc[i]; Finish[i] = True; goto 2
+4: If Finish[i] = True for all i, system is in a safe state
+</PRE>
+  <LI>Now, can use safety algorithm to determine if we can satisfy a given 
+  resource demand. When a process demands additional resources, see if can give 
+  them to process and remain in a safe state. If not, suspend process until 
+  system can allocate resources and remain in a safe state. Need an additional 
+  data structure: <PRE>Request[i,j] = number of j resources that process i requests
+</PRE>
+  <LI>Here is algorithm. Assume process <CODE>i</CODE> has just requested 
+  additional resources. <PRE>1: If Request[i] &lt;= Need[i] goto 2. Otherwise, process has
+   violated its maximum resource claim.
+2: If Request[i] &lt;= Avail goto 3. Otherwise, i must wait
+   because resources are not available.
+3: Pretend to allocate resources as follows:
+   Avail = Avail - Request[i]
+   Alloc[i] = Alloc[i] + Request[i]
+   Need[i] = Need[i] - Request[i]
+   If this is a safe state, give the process the resources. Otherwise,
+   suspend the process and restore the old state.
+</PRE>
+  <LI>When to check if a suspended process should be given the resources and 
+  resumed? Obvious choice - when some other process relinquishes its resources. 
+  Obvious problem - process starves because other processes with lower resource 
+  requirements are always taking freed resources. 
+  <LI>See Example in Section 7.5.3.3. 
+  <LI>Third alternative: deadlock detection and elimination. Just let deadlock 
+  happen. Detect when it does, and eliminate the deadlock by preempting 
+  resources. 
+  <LI>Here is deadlock detection algorithm. Is very similar to safe state 
+  detection algorithm. <PRE>1: Work = Avail;
+   Finish[i] = False for all i;
+2: Find i such that Finish[i] = False and Request[i] &lt;= Work
+   If no such i exists, goto 4
+3: Work = Work + Alloc[i]; Finish[i] = True; goto 2
+4: If Finish[i] = False for some i, system is deadlocked. 
+   Moreover, Finish[i] = False implies that process i is deadlocked.
+</PRE>
+  <LI>When to run deadlock detection algorithm? Obvious time: whenever a process 
+  requests more resources and suspends. If deadlock detection takes too much 
+  time, maybe run it less frequently. 
+  <LI>OK, now you've found a deadlock. What do you do? Must free up some 
+  resources so that some processes can run. So, preempt resources - take them 
+  away from processes. Several different preemption cases: 
+  <UL>
+    <LI>Can preempt some resources without killing job - for example, main 
+    memory. Can just swap out to disk and resume job later. 
+    <LI>If job provides rollback points, can roll job back to point before 
+    acquired resources. At a later time, restart job from rollback point. 
+    Default rollback point - start of job. 
+    <LI>For some resources must just kill job. All resources are then free. Can 
+    either kill processes one by one until your system is no longer deadlocked. 
+    Or, just go ahead and kill all deadlocked processes. </LI></UL>
+  <LI>In a real system, typically use different deadlock strategies for 
+  different situations based on resource characteristics. 
+  <LI>This whole topic has a sort of 60's and 70's batch mainframe feel to it. 
+  How come these topics never seem to arise in modern Unix systems? 
+  <P></P></LI></UL>
+<P><SMALL>Permission is granted to copy and distribute this material for 
+educational purposes only, provided that the following credit line is included: 
+"Operating Systems Lecture Notes, Copyright 1997 Martin C. Rinard." Permission 
+is granted to alter and distribute this material provided that the following 
+credit line is included: "Adapted from Operating Systems Lecture Notes, 
+Copyright 1997 Martin C. Rinard." </SMALL>
+<P><BR>
+<HR>
+<BR>
+<HR>
+
+<ADDRESS><I>Martin Rinard, osnotes@cag.lcs.mit.edu, 
+www.cag.lcs.mit.edu/~rinard</I> <BR><I>8/25/1998</I> </ADDRESS></BODY></HTML>

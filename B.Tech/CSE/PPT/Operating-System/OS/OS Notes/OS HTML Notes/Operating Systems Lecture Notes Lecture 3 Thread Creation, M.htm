@@ -1,0 +1,609 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0051)http://williamstallings.com/Extras/OS-Notes/h3.html -->
+<!--Converted with LaTeX2HTML 97.1 (release) (July 13th, 1997)
+ by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippman, Marek Rouchal, Martin Wilck and others --><HTML><HEAD><TITLE>Operating Systems Lecture Notes Lecture 3 Thread Creation, Manipulation and Synchronization</TITLE>
+<META 
+content="Operating Systems Lecture Notes Lecture 3 Thread Creation, Manipulation and Synchronization&#10;" 
+name=description>
+<META content=h3 name=keywords>
+<META content=document name=resource-type>
+<META content=global name=distribution>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252"><LINK 
+href="Operating Systems Lecture Notes Lecture 3 Thread Creation, Manipulation and Synchronization_files/h3.css" 
+rel=STYLESHEET>
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY>
+<H1 align=center>Operating Systems Lecture Notes <BR>Lecture 3 <BR>Thread 
+Creation, Manipulation and Synchronization </H1>
+<P align=center><STRONG>Martin C. Rinard</STRONG></P>
+<P align=center><STRONG></STRONG></P>
+<P align=left></P>
+<P>
+<UL>
+  <LI>We first must postulate a thread creation and manipulation interface. Will 
+  use the one in Nachos: <PRE>class Thread {
+  public:
+    Thread(char* debugName); 
+    ~Thread();
+    void Fork(void (*func)(int), int arg);
+    void Yield();
+    void Finish();
+}
+</PRE>
+  <LI>The <CODE>Thread</CODE> constructor creates a new thread. It allocates a 
+  data structure with space for the TCB. 
+  <LI>To actually start the thread running, must tell it what function to start 
+  running when it runs. The <CODE>Fork</CODE> method gives it the function and a 
+  parameter to the function. 
+  <LI>What does <CODE>Fork</CODE> do? It first allocates a stack for the thread. 
+  It then sets up the TCB so that when the thread starts running, it will invoke 
+  the function and pass it the correct parameter. It then puts the thread on a 
+  run queue someplace. <CODE>Fork</CODE> then returns, and the thread that 
+  called <CODE>Fork</CODE> continues. 
+  <LI>How does OS set up TCB so that the thread starts running at the function? 
+  First, it sets the stack pointer in the TCB to the stack. Then, it sets the PC 
+  in the TCB to be the first instruction in the function. Then, it sets the 
+  register in the TCB holding the first parameter to the parameter. When the 
+  thread system restores the state from the TCB, the function will magically 
+  start to run. 
+  <LI>The system maintains a queue of runnable threads. Whenever a processor 
+  becomes idle, the thread scheduler grabs a thread off of the run queue and 
+  runs the thread. 
+  <LI>Conceptually, threads execute concurrently. This is the best way to reason 
+  about the behavior of threads. But in practice, the OS only has a finite 
+  number of processors, and it can't run all of the runnable threads at once. 
+  So, must multiplex the runnable threads on the finite number of processors. 
+  <LI>Let's do a few thread examples. First example: two threads that increment 
+  a variable. <PRE>int a = 0;
+void sum(int p) { 
+  a++;
+  printf("%d : a = %d\n", p, a);
+}
+void main() {
+  Thread *t = new Thread("child");
+  t-&gt;Fork(sum, 1);
+  sum(0);
+}
+</PRE>
+  <LI>The two calls to <CODE>sum</CODE> run concurrently. What are the possible 
+  results of the program? To understand this fully, we must break the 
+  <CODE>sum</CODE> subroutine up into its primitive components. 
+  <LI><CODE>sum</CODE> first reads the value of <CODE>a</CODE> into a register. 
+  It then increments the register, then stores the contents of the register back 
+  into <CODE>a</CODE>. It then reads the values of of the control string, 
+  <CODE>p</CODE> and <CODE>a</CODE> into the registers that it uses to pass 
+  arguments to the <CODE>printf</CODE> routine. It then calls 
+  <CODE>printf</CODE>, which prints out the data. 
+  <LI>The best way to understand the instruction sequence is to look at the 
+  generated assembly language (cleaned up just a bit). You can have the compiler 
+  generate assembly code instead of object code by giving it the -S flag. It 
+  will put the generated assembly in the same file name as the .c or .cc file, 
+  but with a .s suffix. <PRE>        la      a, %r0
+        ld      [%r0],%r1
+        add     %r1,1,%r1
+        st      %r1,[%r0]
+
+        ld      [%r0], %o3 ! parameters are passed starting with %o0
+        mov     %o0, %o1
+        la      .L17, %o0
+        call    printf
+</PRE>
+  <LI>So when execute concurrently, the result depends on how the instructions 
+  interleave. What are possible results? <PRE>0 : 1                                      0 : 1
+1 : 2                                      1 : 1
+
+1 : 2                                      1 : 1
+0 : 1                                      0 : 1
+
+1 : 1                                      0 : 2
+0 : 2                                      1 : 2
+ 
+0 : 2                                      1 : 2
+1 : 1                                      0 : 2
+</PRE>So the results are nondeterministic - you may get different results when 
+  you run the program more than once. So, it can be very difficult to reproduce 
+  bugs. Nondeterministic execution is one of the things that makes writing 
+  parallel programs much more difficult than writing serial programs. 
+  <LI>Chances are, the programmer is not happy with all of the possible results 
+  listed above. Probably wanted the value of <CODE>a</CODE> to be 2 after both 
+  threads finish. To achieve this, must make the increment operation atomic. 
+  That is, must prevent the interleaving of the instructions in a way that would 
+  interfere with the additions. 
+  <LI>Concept of atomic operation. An atomic operation is one that executes 
+  without any interference from other operations - in other words, it executes 
+  as one unit. Typically build complex atomic operations up out of sequences of 
+  primitive operations. In our case the primitive operations are the individual 
+  machine instructions. 
+  <LI>More formally, if several atomic operations execute, the final result is 
+  guaranteed to be the same as if the operations executed in some serial order. 
+  <LI>In our case above, build an increment operation up out of loads, stores 
+  and add machine instructions. Want the increment operation to be atomic. 
+  <LI>Use synchronization operations to make code sequences atomic. First 
+  synchronization abstraction: semaphores. A semaphore is, conceptually, a 
+  counter that supports two atomic operations, P and V. Here is the Semaphore 
+  interface from Nachos: <PRE>class Semaphore {
+  public:
+    Semaphore(char* debugName, int initialValue);       
+    ~Semaphore();                                      
+    void P();
+    void V();
+}
+</PRE>
+  <LI>Here is what the operations do: 
+  <UL>
+    <LI>Semphore(name, count) : creates a semaphore and initializes the counter 
+    to count. 
+    <LI>P() : Atomically waits until the counter is greater than 0, then 
+    decrements the counter and returns. 
+    <LI>V() : Atomically increments the counter. </LI></UL>
+  <LI>Here is how we can use the semaphore to make the <CODE>sum</CODE> example 
+  work: <PRE>int a = 0;
+Semaphore *s;
+void sum(int p) {
+  int t;
+  s-&gt;P();
+  a++;
+  t = a;
+  s-&gt;V();
+  printf("%d : a = %d\n", p, t);
+}
+void main() {
+  Thread *t = new Thread("child");
+  s = new Semaphore("s", 1);
+  t-&gt;Fork(sum, 1);
+  sum(0);
+}
+</PRE>
+  <LI>We are using semaphores here to implement a mutual exclusion mechanism. 
+  The idea behind mutual exclusion is that only one thread at a time should be 
+  allowed to do something. In this case, only one thread should access 
+  <CODE>a</CODE>. Use mutual exclusion to make operations atomic. The code that 
+  performs the atomic operation is called a critical section. 
+  <LI>Semaphores do much more than mutual exclusion. They can also be used to 
+  synchronize producer/consumer programs. The idea is that the producer is 
+  generating data and the consumer is consuming data. So a Unix pipe has a 
+  producer and a consumer. You can also think of a person typing at a keyboard 
+  as a producer and the shell program reading the characters as a consumer. 
+  <LI>Here is the synchronization problem: make sure that the consumer does not 
+  get ahead of the producer. But, we would like the producer to be able to 
+  produce without waiting for the consumer to consume. Can use semaphores to do 
+  this. Here is how it works: <PRE>Semaphore *s;
+void consumer(int dummy) {
+  while (1) { 
+    s-&gt;P();
+    consume the next unit of data
+  }
+}
+void producer(int dummy) {
+  while (1) {
+    produce the next unit of data
+    s-&gt;V();
+  }
+}
+void main() {
+  s = new Semaphore("s", 0);
+  Thread *t = new Thread("consumer");
+  t-&gt;Fork(consumer, 1);
+  t = new Thread("producer");
+  t-&gt;Fork(producer, 1);
+}
+</PRE>In some sense the semaphore is an abstraction of the collection of data. 
+
+  <LI>In the real world, pragmatics intrude. If we let the producer run forever 
+  and never run the consumer, we have to store all of the produced data 
+  somewhere. But no machine has an infinite amount of storage. So, we want to 
+  let the producer to get ahead of the consumer if it can, but only a given 
+  amount ahead. We need to implement a bounded buffer which can hold only N 
+  items. If the bounded buffer is full, the producer must wait before it can put 
+  any more data in. <PRE>Semaphore *full;
+Semaphore *empty;
+void consumer(int dummy) {
+  while (1) {
+    full-&gt;P();
+    consume the next unit of data
+    empty-&gt;V();
+  }
+}
+void producer(int dummy) {
+  while (1) {
+    empty-&gt;P();
+    produce the next unit of data
+    full-&gt;V();
+  }
+}
+void main() {
+  empty = new Semaphore("empty", N);
+  full = new Semaphore("full", 0);
+  Thread *t = new Thread("consumer");
+  t-&gt;Fork(consumer, 1);
+  t = new Thread("producer");
+  t-&gt;Fork(producer, 1);
+}
+</PRE>An example of where you might use a producer and consumer in an 
+  operating system is the console (a device that reads and writes characters 
+  from and to the system console). You would probably use semaphores to make 
+  sure you don't try to read a character before it is typed. 
+  <LI>Semaphores are one synchronization abstraction. There is another called 
+  locks and condition variables. 
+  <LI>Locks are an abstraction specifically for mutual exclusion only. Here is 
+  the Nachos lock interface: <PRE>class Lock {
+  public:
+    Lock(char* debugName);              // initialize lock to be FREE
+    ~Lock();                            // deallocate lock
+    void Acquire(); // these are the only operations on a lock
+    void Release(); // they are both *atomic*
+}
+</PRE>
+  <LI>A lock can be in one of two states: locked and unlocked. Semantics of lock 
+  operations: 
+  <UL>
+    <LI>Lock(name) : creates a lock that starts out in the unlocked state. 
+    <LI>Acquire() : Atomically waits until the lock state is unlocked, then sets 
+    the lock state to locked. 
+    <LI>Release() : Atomically changes the lock state to unlocked from locked. 
+    </LI></UL>In assignment 1 you will implement locks in Nachos on top of 
+  semaphores. 
+  <LI>What are requirements for a locking implementation? 
+  <UL>
+    <LI>Only one thread can acquire lock at a time. (safety) 
+    <LI>If multiple threads try to acquire an unlocked lock, one of the threads 
+    will get it. (liveness) 
+    <LI>All unlocks complete in finite time. (liveness) </LI></UL>
+  <LI>What are desirable properties for a locking implementation? 
+  <UL>
+    <LI>Efficiency: take up as little resources as possible. 
+    <LI>Fairness: threads acquire lock in the order they ask for it. Are also 
+    weaker forms of fairness. 
+    <LI>Simple to use. </LI></UL>
+  <LI>When use locks, typically associate a lock with pieces of data that 
+  multiple threads access. When one thread wants to access a piece of data, it 
+  first acquires the lock. It then performs the access, then unlocks the lock. 
+  So, the lock allows threads to perform complicated atomic operations on each 
+  piece of data. 
+  <LI>Can you implement unbounded buffer only using locks? There is a problem - 
+  if the consumer wants to consume a piece of data before the producer produces 
+  the data, it must wait. But locks do not allow the consumer to wait until the 
+  producer produces the data. So, consumer must loop until the data is ready. 
+  This is bad because it wastes CPU resources. 
+  <LI>There is another synchronization abstraction called condition variables 
+  just for this kind of situation. Here is the Nachos interface: <PRE>class Condition {
+  public:
+    Condition(char* debugName);  
+    ~Condition(); 
+    void Wait(Lock *conditionLock); 
+    void Signal(Lock *conditionLock);
+    void Broadcast(Lock *conditionLock);
+}
+</PRE>
+  <LI>Semantics of condition variable operations: 
+  <UL>
+    <LI>Condition(name) : creates a condition variable. 
+    <LI>Wait(Lock *l) : Atomically releases the lock and waits. When Wait 
+    returns the lock will have been reacquired. 
+    <LI>Signal(Lock *l) : Enables one of the waiting threads to run. When Signal 
+    returns the lock is still acquired. 
+    <LI>Broadcast(Lock *l) : Enables all of the waiting threads to run. When 
+    Broadcast returns the lock is still acquired. </LI></UL>All locks must be the 
+  same. In assignment 1 you will implement condition variables in Nachos on top 
+  of semaphores. 
+  <LI>Typically, you associate a lock and a condition variable with a data 
+  structure. Before the program performs an operation on the data structure, it 
+  acquires the lock. If it has to wait before it can perform the operation, it 
+  uses the condition variable to wait for another operation to bring the data 
+  structure into a state where it can perform the operation. In some cases you 
+  need more than one condition variable. 
+  <LI>Let's say that we want to implement an unbounded buffer using locks and 
+  condition variables. In this case we have 2 consumers. <PRE>Lock *l;
+Condition *c;
+int avail = 0;
+void consumer(int dummy) {
+  while (1) { 
+    l-&gt;Acquire();
+    if (avail == 0) { 
+      c-&gt;Wait(l);
+    }
+    consume the next unit of data
+    avail--;
+    l-&gt;Release();
+  } 
+}
+void producer(int dummy) {
+  while (1) {
+    l-&gt;Acquire();
+    produce the next unit of data
+    avail++;
+    c-&gt;Signal(l);
+    l-&gt;Release();
+  }
+}
+void main() {
+  l = new Lock("l");
+  c = new Condition("c");
+  Thread *t = new Thread("consumer");
+  t-&gt;Fork(consumer, 1);
+  Thread *t = new Thread("consumer");
+  t-&gt;Fork(consumer, 2);
+  t = new Thread("producer");
+  t-&gt;Fork(producer, 1);
+}
+</PRE>
+  <LI>There are two variants of condition variables: Hoare condition variables 
+  and Mesa condition variables. For Hoare condition variables, when one thread 
+  performs a <CODE>Signal</CODE>, the very next thread to run is the waiting 
+  thread. For Mesa condition variables, there are no guarantees when the 
+  signalled thread will run. Other threads that acquire the lock can execute 
+  between the signaller and the waiter. The example above will work with Hoare 
+  condition variables but not with Mesa condition variables. 
+  <LI>What is the problem with Mesa condition variables? Consider the following 
+  scenario: Three threads, thread 1 one producing data, threads 2 and 3 
+  consuming data. 
+  <UL>
+    <LI>Thread 2 calls <TT>consumer</TT>, and suspends. 
+    <LI>Thread 1 calls <TT>producer</TT>, and signals thread 2. 
+    <LI>Instead of thread 2 running next, thread 3 runs next, calls 
+    <TT>consumer</TT>, and consumes the element. (Note: with Hoare monitors, 
+    thread 2 would always run next, so this would not happen.) 
+    <LI>Thread 2 runs, and tries to consume an item that is not there. Depending 
+    on the data structure used to store produced items, may get some kind of 
+    illegal access error. </LI></UL>
+  <LI>How can we fix this problem? Replace the <CODE>if</CODE> with a 
+  <CODE>while</CODE>. <PRE>void consumer(int dummy) {
+  while (1) { 
+    l-&gt;Acquire();
+    while (avail == 0) { 
+      c-&gt;Wait(l);
+    }
+    consume the next unit of data
+    avail--;
+    l-&gt;Release();
+  } 
+}
+</PRE>In general, this is a crucial point. Always put <CODE>while</CODE>'s 
+  around your condition variable code. If you don't, you can get really obscure 
+  bugs that show up very infrequently. 
+  <LI>In this example, what is the data that the lock and condition variable are 
+  associated with? The <CODE>avail</CODE> variable. 
+  <LI>People have developed a programming abstraction that automatically 
+  associates locks and condition variables with data. This abstraction is called 
+  a monitor. A monitor is a data structure plus a set of operations (sort of 
+  like an abstract data type). The monitor also has a lock and, optionally, one 
+  or more condition variables. See notes for Lecture 14. 
+  <LI>The compiler for the monitor language automatically inserts a lock 
+  operation at the beginning of each routine and an unlock operation at the end 
+  of the routine. So, programmer does not have to put in the lock operations. 
+  <LI>Monitor languages were popular in the middle 80's - they are in some sense 
+  safer because they eliminate one possible programming error. But more recent 
+  languages have tended not to support monitors explicitly, and expose the 
+  locking operations to the programmer. So the programmer has to insert the lock 
+  and unlock operations by hand. Java takes a middle ground - it supports 
+  monitors, but also allows programmers to exert finer grain control over the 
+  locked sections by supporting synchronized blocks within methods. But 
+  synchronized blocks still present a structured model of synchronization, so it 
+  is not possible to mismatch the lock acquire and release. 
+  <LI>Laundromat Example: A local laudromat has switched to a computerized 
+  machine allocation scheme. There are N machines, numbered 1 to N. By the front 
+  door there are P allocation stations. When you want to wash your clothes, you 
+  go to an allocation station and put in your coins. The allocation station 
+  gives you a number, and you use that machine. There are also P deallocation 
+  stations. When your clothes finish, you give the number back to one of the 
+  deallocation stations, and someone else can use the machine. Here is the alpha 
+  release of the machine allocation software: <PRE>allocate(int dummy) { 
+  while (1) { 
+    wait for coins from user
+    n = get();
+    give number n to user
+  }
+}
+deallocate(int dummy) { 
+  while (1) {
+    wait for number n from user
+    put(i);
+  }
+}
+main() { 
+  for (i = 0; i &lt; P; i++) { 
+    t = new Thread("allocate");
+    t-&gt;Fork(allocate, 0);
+    t = new Thread("deallocate");
+    t-&gt;Fork(deallocate, 0);
+  }
+}
+</PRE>
+  <LI>The key parts of the scheduling are done in the two routines 
+  <CODE>get</CODE> and <CODE>put</CODE>, which use an array data structure 
+  <CODE>a</CODE> to keep track of which machines are in use and which are free. <PRE>int a[N];
+int get() { 
+  for (i = 0; i &lt; N; i++) { 
+    if (a[i] == 0) { 
+      a[i] = 1;
+      return(i+1);
+    }
+  }
+}
+void put(int i) { 
+  a[i-1] = 0;
+}
+</PRE>
+  <LI>It seems that the alpha software isn't doing all that well. Just looking 
+  at the software, you can see that there are several synchronization problems. 
+  <LI>The first problem is that sometimes two people are assigned to the same 
+  machine. Why does this happen? We can fix this with a lock: <PRE>int a[N];
+Lock *l;
+int get() { 
+  l-&gt;Acquire();  
+  for (i = 0; i &lt; N; i++) { 
+    if (a[i] == 0) { 
+      a[i] = 1;
+      l-&gt;Release();
+      return(i+1);
+    }
+  }
+  l-&gt;Release();
+}
+void put(int i) { 
+  l-&gt;Acquire();
+  a[i-1] = 0;
+  l-&gt;Release();
+}
+</PRE>So now, have fixed the multiple assignment problem. But what happens if 
+  someone comes in to the laundry when all of the machines are already taken? 
+  What does the machine return? Must fix it so that the system waits until there 
+  is a machine free before it returns a number. The situation calls for 
+  condition variables. <PRE>int a[N];
+Lock *l;
+Condition *c;
+int get() { 
+  l-&gt;Acquire();  
+  while (1) { 
+    for (i = 0; i &lt; N; i++) { 
+      if (a[i] == 0) { 
+        a[i] = 1;
+        l-&gt;Release();
+        return(i+1);
+      }
+    }
+    c-&gt;Wait(l);
+  }
+}
+void put(int i) { 
+  l-&gt;Acquire();
+  a[i-1] = 0;
+  c-&gt;Signal();
+  l-&gt;Release();
+}
+</PRE>
+  <LI>What data is the lock protecting? The <CODE>a</CODE> array. 
+  <LI>When would you use a broadcast operation? Whenever want to wake up all 
+  waiting threads, not just one. For an event that happens only once. For 
+  example, a bunch of threads may wait until a file is deleted. The thread that 
+  actually deleted the file could use a broadcast to wake up all of the threads. 
+
+  <LI>Also use a broadcast for allocation/deallocation of variable sized units. 
+  Example: concurrent malloc/free. <PRE>Lock *l;
+Condition *c;
+char *malloc(int s) {
+  l-&gt;Acquire();
+  while (cannot allocate a chunk of size s) {
+    c-&gt;Wait(l);
+  }
+  allocate chunk of size s;
+  l-&gt;Release();
+  return pointer to allocated chunk
+}
+void free(char *m) {
+  l-&gt;Acquire();
+  deallocate m.
+  c-&gt;Broadcast(l);
+  l-&gt;Release();
+}
+</PRE>
+  <LI>Example with malloc/free. Initially start out with 10 bytes free. 
+  <DIV align=center>
+  <TABLE cellPadding=3 border=1>
+    <TBODY>
+    <TR vAlign=top>
+      <TD noWrap align=middle>Time</TD>
+      <TD noWrap align=middle>Process 1</TD>
+      <TD noWrap align=middle>Process 2</TD>
+      <TD noWrap align=middle>Process 3</TD></TR>
+    <TR vAlign=top>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>malloc(10) - succeeds</TD>
+      <TD noWrap align=middle>malloc(5) - suspends lock</TD>
+      <TD noWrap align=middle>malloc(5) suspends lock</TD></TR>
+    <TR vAlign=top>
+      <TD noWrap align=middle>1</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>gets lock - waits</TD>
+      <TD noWrap align=middle>&nbsp;</TD></TR>
+    <TR vAlign=top>
+      <TD noWrap align=middle>2</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>gets lock - waits</TD></TR>
+    <TR vAlign=top>
+      <TD noWrap align=middle>3</TD>
+      <TD noWrap align=middle>free(10) - broadcast</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>&nbsp;</TD></TR>
+    <TR vAlign=top>
+      <TD noWrap align=middle>4</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>resume malloc(5) - succeeds</TD>
+      <TD noWrap align=middle>&nbsp;</TD></TR>
+    <TR vAlign=top>
+      <TD noWrap align=middle>5</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>resume malloc(5) - succeeds</TD></TR>
+    <TR vAlign=top>
+      <TD noWrap align=middle>6</TD>
+      <TD noWrap align=middle>malloc(7) - waits</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>&nbsp;</TD></TR>
+    <TR vAlign=top>
+      <TD noWrap align=middle>7</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>malloc(3) - waits</TD></TR>
+    <TR vAlign=top>
+      <TD noWrap align=middle>8</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>free(5) - broadcast</TD>
+      <TD noWrap align=middle>&nbsp;</TD></TR>
+    <TR vAlign=top>
+      <TD noWrap align=middle>9</TD>
+      <TD noWrap align=middle>resume malloc(7) - waits</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>&nbsp;</TD></TR>
+    <TR vAlign=top>
+      <TD noWrap align=middle>10</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>&nbsp;</TD>
+      <TD noWrap align=middle>resume malloc(3) - 
+  succeeds</TD></TR></TBODY></TABLE></DIV>What would happen if changed 
+  <CODE>c-&gt;Broadcast(l)</CODE> to <CODE>c-&gt;Signal(l)</CODE>? At step 10, 
+  process 3 would not wake up, and it would not get the chance to allocate 
+  available memory. What would happen if changed <CODE>while</CODE> loop to an 
+  <CODE>if</CODE>? 
+  <LI>You will be asked to implement condition variables as part of assignment 
+  1. The following implementation is INCORRECT. Please do not turn this 
+  implementation in. <PRE>class Condition {
+  private:
+    int waiting;
+    Semaphore *sema;
+}
+void Condition::Wait(Lock* l)
+{
+  waiting++;
+  l-&gt;Release();
+  sema-&gt;P();
+  l-&gt;Acquire();
+}
+void Condition::Signal(Lock* l)
+{
+  if (waiting &gt; 0) { 
+    sema-&gt;V();
+    waiting--;
+  }
+}
+</PRE>Why is this solution incorrect? Because in some cases the signalling 
+  thread may wake up a waiting thread that called Wait after the signalling 
+  thread called Signal. 
+  <P></P></LI></UL>
+<P><SMALL>Permission is granted to copy and distribute this material for 
+educational purposes only, provided that the following credit line is included: 
+"Operating Systems Lecture Notes, Copyright 1997 Martin C. Rinard." Permission 
+is granted to alter and distribute this material provided that the following 
+credit line is included: "Adapted from Operating Systems Lecture Notes, 
+Copyright 1997 Martin C. Rinard." </SMALL>
+<P><BR>
+<HR>
+<BR>
+<HR>
+
+<ADDRESS><I>Martin Rinard, osnotes@cag.lcs.mit.edu, 
+www.cag.lcs.mit.edu/~rinard</I> <BR><I>8/25/1998</I> </ADDRESS></BODY></HTML>

@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0052)http://williamstallings.com/Extras/OS-Notes/h12.html -->
+<!--Converted with LaTeX2HTML 97.1 (release) (July 13th, 1997)
+ by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippman, Marek Rouchal, Martin Wilck and others --><HTML><HEAD><TITLE>Operating Systems Lecture Notes Lecture 12 Introduction to File Systems</TITLE>
+<META 
+content="Operating Systems Lecture Notes Lecture 12 Introduction to File Systems&#10;" 
+name=description>
+<META content=h12 name=keywords>
+<META content=document name=resource-type>
+<META content=global name=distribution>
+<META http-equiv=Content-Type content="text/html; charset=windows-1252"><LINK 
+href="Operating Systems Lecture Notes Lecture 12 Introduction to File Systems_files/h12.css" 
+rel=STYLESHEET>
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY>
+<P>
+<H1 align=center>Operating Systems Lecture Notes <BR>Lecture 12 <BR>Introduction 
+to File Systems </H1>
+<P align=center><STRONG>Martin C. Rinard</STRONG></P>
+<P align=center><STRONG></STRONG></P>
+<P align=left></P>
+<P>
+<UL>
+  <LI>File systems. Important topic - most crucial data stored in file systems, 
+  and file system performance is crucial component of overall system 
+  performance. In practice, is maybe the most important. 
+  <LI>What are files? Data that is readily available, but stored on non-volatile 
+  media. Standard place to store files: on a hard disk or floppy disk. Also, 
+  data may be a network away. 
+  <LI>Most systems let you organize files into a tree structure, so have 
+  directories and files. 
+  <LI>What is stored in files? Latex source, Nachos source, FrameMaker source, 
+  C++ object files, executables, Perl scripts, shell files, databases, 
+  PostScript files, etc. 
+  <LI>Meaning of a file depends on the tools that manipulate it. Meaning of a 
+  Latex file is different for the Latex executable than for a standard text 
+  editor. Executable file format has meaning to OS. Object file format has 
+  meaning to linker. 
+  <LI>Some systems support a lot of different file types explicitly. Macintosh, 
+  IBM mainframes do this. Knowledge of file types built into OS, and OS handles 
+  different kinds of files differently. 
+  <LI>In Unix, meaning of a file is simply a sequence of bytes. How do Unix 
+  tools tell file types apart? By looking at contents! For example, how does 
+  Unix tell executables apart from shell scripts apart from Perl files when it 
+  executes it? 
+  <UL>
+    <LI>Shell Scripts - start with a <CODE>#</CODE>. 
+    <LI>Perl Scripts - start with a <CODE>#!/usr/bin/perl</CODE>. In general, if 
+    file starts with <CODE>#!tool</CODE>, Unix shell interprets file using 
+    <CODE>tool</CODE>. 
+    <LI>How about executables? Start with Unix executable magic number. Recall 
+    Nachos object file format. 
+    <LI>What about PostScript files? Start with something like 
+    <CODE>%!PS-Adobe-2.0</CODE>, which printing utilities recognize. 
+  </LI></UL>Single exception: directories and symbolic links are explicitly 
+  tagged in Unix. 
+  <LI>What about Macintosh? All files have a type (pict, text) and the name of 
+  program that created the file. When double click on the file, it automatically 
+  starts the program that created file and loads the file. Have to have 
+  utilities that twiddle the file metadata (types and program names). 
+  <LI>What about DOS? Have an ad-hoc file typing mechanism built into file 
+  naming conventions. So, .com and .exe identify two different kinds of 
+  executables. .bat identifies a text batch file. These are enforced by OS 
+  (because it is involved with launching executables). Other file extensions are 
+  recognized by other programs but not by OS. 
+  <LI>File attributes: 
+  <UL>
+    <LI>Name 
+    <LI>Type - in Unix, implicit. 
+    <LI>Location - where file is stored on disk 
+    <LI>Size 
+    <LI>Protection 
+    <LI>Time, date and user identification. </LI></UL>
+  <LI>All file system information is stored in nonvolatile storage in a way that 
+  it can be reconstructed on a system crash. Very important for data security. 
+  <LI>How do programs access files? Several general ways: 
+  <UL>
+    <LI>Sequential - open it, then read or write from beginning to end. 
+    <LI>Direct - specify the starting address of the data. 
+    <LI>Indexed - index file by identifier (name, for example), then retrieve 
+    record associated by name. </LI></UL>Files may be accessed more than one way. 
+  A payroll file, for example, may be accessed sequentially by paycheck program 
+  and indexed by personnel office. Nachos executable files are accessed 
+  directly. 
+  <LI>File structure can be optimized for a given access mode. 
+  <UL>
+    <LI>For sequential access, can have file just laid out sequentially on disk. 
+    What is problem? 
+    <LI>For direct access, can have a disk block table telling where each disk 
+    block is. To access indexed data, first traverse disk block table to find 
+    right disk block, then go to the block containing data. 
+    <LI>For more sophisticated indexed access, may build an index file. Example: 
+    IBM ISAM (Indexed Sequential Access Mode). User selects a key, and system 
+    builds a two-level index for the key. Uses binary search at each level of 
+    index, then linear search within final block. Notice how memory hierarchy 
+    considerations drive file implementation. </LI></UL>
+  <LI>Easy to simulate a sequential access file given a direct access file - 
+  just keep track of current file position. But simulating direct access file 
+  with a sequential access file is a lot harder. 
+  <LI>Fundamental design choice: lots of file formats or few file formats? Unix: 
+  few (one) file format. VMS: few (three). IBM lots (I don't know just how 
+  many). 
+  <LI>Advantage of lots of file formats: user probably has one that fits the 
+  bill. 
+  <LI>Disadvantage: OS becomes larger. System becomes harder to use (must choose 
+  file format, if get it wrong it is a big problem). 
+  <LI>Directory structure. To organize files, many systems provide a 
+  hierarchical file system arrangement. Can have files, and then directories of 
+  files. Common arrangement: tree of files. Naming can be absolute, relative, or 
+  both. 
+  <LI>There is sometimes a need to share files between different parts of the 
+  tree. So, structure becomes a graph. Can get to same file in multiple ways. 
+  Unix supports two kinds of links: 
+  <UL>
+    <LI>Symbolic Links: directory entry is name of another file. If that file is 
+    moved, symbolic link still points to (non-existent) file. If another file is 
+    copied into that spot, symbolic link all of a sudden points to it. 
+    <LI>Hard Links: sticks with the file. If file is moved, hard link still 
+    points to file. To get rid of file, must delete it from all places that have 
+    hard links to it. </LI></UL>Link command (ln) sets these links up. 
+  <LI>Uses for soft links? Can have two people share files. Can also set up 
+  source directories, then link compilation directories to source directories. 
+  Typically useful file system structuring tool. 
+  <LI>Graph structure introduces complications. First, must be sure not to 
+  delete hard linked files until all pointers to them are gone. Standard 
+  solution: reference counts. Second, only want to traverse files once even if 
+  have multiple references to same file. Standard solution: marking. cp does not 
+  handle this well for soft links; tar handles it well. 
+  <LI>What about cyclic graph structures? Problem is that cycles may make 
+  reference counts not work - can have a section of graph that is disconnected 
+  from rest, but all entries have positive reference counts. Only solution: 
+  garbage collect. Not done very often because it takes so long. 
+  <LI>Unix prevents users from making hard links create cycles by only allowing 
+  hard links to point to files, not directories. But, with .. still have some 
+  cycles in structure. 
+  <LI>Memory-mapped files. Standard view of system: have data stored in address 
+  space of a process, but data goes away when process dies. If want to preserve 
+  data, must write it to disk, then read it back in again when need it. 
+  <LI>Writing IO routines to dump data to disk and back again is a real hassle. 
+  What is worse, if programs share data using files, must maintain consistency 
+  between file and data read in via some other mechanism. 
+  <LI>Solution: memory-mapped files. Can map part of file into process's address 
+  space and read and write the file like a normal piece of memory. Sort of like 
+  memory-mapped IO, generalized to user level. So, processes can share 
+  persistent data directly with no hassles. Programs can dump data structures to 
+  disk without having to write routines to linearize, output and read in data 
+  structures. 
+  <LI>Used for stuff like snapshot files in interactive systems. 
+  <LI>In Unix, the system call that sets this up is the <CODE>mmap</CODE> system 
+  call. How is sharing set up for processes on the same machine? What about 
+  processes on different machines? 
+  <LI>Next issue: protection. Why is protection necessary? Because people want 
+  to share files, but not share all aspects of all files. Want protection on 
+  individual file and operation basis. 
+  <UL>
+    <LI>Professor wants students to read but not write assignments. 
+    <LI>Professor wants to keep exam in same directory as assignments, but 
+    students should not be able to read exam. 
+    <LI>Can execute but not write commands like cp, cat, etc. </LI></UL>For 
+  convenience, want to create coarser grain concepts. 
+  <UL>
+    <LI>All people in research group should be able to read and write source 
+    files. Others should not be able to access them. 
+    <LI>Everybody should be able to read files in a given directory. </LI></UL>
+  <LI>Conceptually, have operations (open, read, write, execute), resources 
+  (files) and principals (users or processes). Can describe desired protection 
+  using access matrix. Have list of principals across top and resources on the 
+  side. Each entry of matrix lists operations that the principal can perform on 
+  the resource. 
+  <LI>Two standard mechanisms for access control: access lists and capabilities. 
+
+  <UL>
+    <LI>Access lists: for each resource (like a file), give a list of principals 
+    allowed to access that resource and the access they are allowed to perform. 
+    So, each row of access matrix is an access list. 
+    <LI>Capabilities: for each resource and access operation, give out 
+    capabilities that give the holder the right to perform the operation on that 
+    resource. Capabilities must be unforgeable. Each column of access matrix is 
+    a capability list. </LI></UL>Instead of organizing access lists on a principal 
+  by principal basis, can organize on a group basis. 
+  <LI>Who controls access lists and capabilities? Done under OS control. Will 
+  talk more about security later. 
+  <LI>What is the Unix security model? Have three operations - read, write and 
+  execute. Each file has an owner and a group. Protections are given for each 
+  operation on basis of everybody, group and owner. Like everything else in 
+  Unix, is a fairly simple and primitive protection strategy. 
+  <LI>Unix file listing: <PRE>   4 drwxr-xr--   2 martin   faculty     2048 May 15 21:03 ./
+   2 drwxr-xr-x   7 martin   faculty      512 May  3 17:46 ../
+   2 -rw-r-----   1 martin   faculty      213 Apr 19 22:27 a0.aux
+   8 -rw-r-----   1 martin   faculty     3488 Apr 19 22:27 a0.dvi
+   4 -rw-r-----   1 martin   faculty     1218 Apr 19 22:27 a0.log
+  72 -rw-r--r--   1 martin   faculty    36617 Apr 19 22:27 a0.ps
+   6 -rwxr-xr-x   1 martin   faculty     2599 Apr  5 18:07 a0.tex*
+</PRE>
+  <LI>How are files implemented on a standard hard-disk based system? It is up 
+  to OS to implement it. Why must OS do this? Protection. 
+  <LI>What does a disk look like? It is a stack of platters. Each platter may 
+  have two surfaces (one per side). There is one disk head per surface. The 
+  surfaces revolve beneath the heads, with the heads riding on a cushion of air. 
+  The heads move back and forth between the platters as a unit. The area beneath 
+  a stationary head is a track. The set of tracks that can be accessed without 
+  moving the heads is a cylinder. Each track is broken up into sectors. A sector 
+  is the unit of disk transfer. 
+  <LI>To read a given sector we first move the heads to that sector's cylinder 
+  (seek time), then wait for the sector to rotate under the head (latency time), 
+  then copy data off of disk into memory (transfer time). 
+  <LI>Typical hard disk statistics: (Sequel 5400 from August 1993, 5.25 inch 
+  4.0Gbyte). 
+  <UL>
+    <LI>Platters: 13 
+    <LI>Read/Write heads: 26 
+    <LI>Tracks/Surface: 3,058 
+    <LI>Track Capacity (bytes): 40,448 - 60,928 
+    <LI>Bytes/Sector: 512 - 520 
+    <LI>Sectors/Track: 79-119 
+    <LI>Media Transfer Rate (MB/s): 3.6-5.5 
+    <LI>Track-to-track Seek: 1.3 ms 
+    <LI>Max Seek: 25 ms 
+    <LI>Average Seek: 12 ms 
+    <LI>Rotational Speed: 5,400 rpm 
+    <LI>Average Latency: 5.6 ms </LI></UL>
+  <LI>How does this compare to timings for a standard workstation? DECStation 
+  5000 is a standard workstation available in 1993. Had a 33 MHz MIPS R3000, 60 
+  ns memory. How many instructions can execute in 30 ms (about time for average 
+  seek plus average latency)? 33 * 30 * 1000 = 990,000. Plus, many operations 
+  require multiple disk accesses. 
+  <LI>What does disk look like to OS? Is just a sequence of sectors. All sectors 
+  in a track are in sequence; all tracks in a cylinder are in sequence. Adjacent 
+  cylinders are in sequence. OS may logically link several disk sectors together 
+  to increase effective disk block size. 
+  <LI>How does OS access disk? There is a piece of hardware on the disk called a 
+  disk controller. OS issues instructions to disk controller. Can either use IO 
+  instructions or memory-mapped IO operations. 
+  <LI>In effect, disk is just a big array of fixed-size chunks. Job of the OS is 
+  to implement file system abstractions on top of these chunks. 
+  <P></P></LI></UL>
+<P><SMALL>Permission is granted to copy and distribute this material for 
+educational purposes only, provided that the following credit line is included: 
+"Operating Systems Lecture Notes, Copyright 1997 Martin C. Rinard." Permission 
+is granted to alter and distribute this material provided that the following 
+credit line is included: "Adapted from Operating Systems Lecture Notes, 
+Copyright 1997 Martin C. Rinard." </SMALL>
+<P><BR>
+<HR>
+<BR>
+<HR>
+
+<ADDRESS><I>Martin Rinard, osnotes@cag.lcs.mit.edu, 
+www.cag.lcs.mit.edu/~rinard</I> <BR><I>8/25/1998</I> </ADDRESS></BODY></HTML>
