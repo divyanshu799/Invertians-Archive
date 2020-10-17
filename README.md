@@ -20,7 +20,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/satyam12345678"><img src="https://avatars2.githubusercontent.com/u/50956927?v=4" width="100px;" alt=""/><br /><sub><b>Satyam Tripathi</b></sub></a><br /><a href="#content-satyam12345678" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/rkraghavkh18"><img src="https://avatars3.githubusercontent.com/u/57208426?v=4" width="100px;" alt=""/><br /><sub><b>Raghav Khandelwal</b></sub></a><br /><a href="#content-rkraghavkh18" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/shalinipal69"><img src="https://avatars1.githubusercontent.com/u/63445999?v=4" width="100px;" alt=""/><br /><sub><b>shalinipal69</b></sub></a><br /><a href="#content-shalinipal69" title="Content">🖋</a></td>
-    <td align="center"><a href="http://tomasroj.cz"><img src="https://avatars0.githubusercontent.com/u/42382743?v=4" width="100px;" alt=""/><br /><sub><b>Tomáš Roj</b></sub></a><br /><a href="#content-TomasRoj" title="Content">🖋</a> <a href="https://github.com/nitish-awasthi/Invertians-Archive/commits?author=TomasRoj" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/TomasRoj"><img src="https://avatars0.githubusercontent.com/u/42382743?v=4" width="100px;" alt=""/><br /><sub><b>Tomáš Roj</b></sub></a><br /><a href="#content-TomasRoj" title="Content">🖋</a> <a href="https://github.com/nitish-awasthi/Invertians-Archive/commits?author=TomasRoj" title="Documentation">📖</a></td>
   </tr>
 </table>
 
