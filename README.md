@@ -1,6 +1,6 @@
 # Welcome Contributors 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 ### Invertians-Archive
 Admit it, we all have a secret place where we store our notes, books, codes etc. But wouldn't it be easier to just have it all in one place? A Virtual Library for all students where we can contribute and find material for all courses.
@@ -26,6 +26,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://worldcreativelife.wordpress.com"><img src="https://avatars0.githubusercontent.com/u/43174904?v=4" width="100px;" alt=""/><br /><sub><b>Shiny Olivia</b></sub></a><br /><a href="#content-olivia26" title="Content">🖋</a></td>
     <td align="center"><a href="https://www.kartikagrawal.in/"><img src="https://avatars1.githubusercontent.com/u/57009207?v=4" width="100px;" alt=""/><br /><sub><b>Kartik Agarwal</b></sub></a><br /><a href="#content-kartikagarwal9" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/rajcodeslab"><img src="https://avatars1.githubusercontent.com/u/73049557?v=4" width="100px;" alt=""/><br /><sub><b>Raj</b></sub></a><br /><a href="#content-rajcodeslab" title="Content">🖋</a></td>
+    <td align="center"><a href="https://github.com/sarcastic22101"><img src="https://avatars2.githubusercontent.com/u/44620224?v=4" width="100px;" alt=""/><br /><sub><b>sarcastic22101</b></sub></a><br /><a href="#content-sarcastic22101" title="Content">🖋</a></td>
   </tr>
 </table>
 
