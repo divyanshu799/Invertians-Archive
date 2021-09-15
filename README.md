@@ -1,9 +1,13 @@
-# Welcome Contributors 
+# Welcome Hacktoberfest 2021 Contributors  
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-### Invertians-Archive
+### Engineering-Archive
 Admit it, we all have a secret place where we store our notes, books, codes etc. But wouldn't it be easier to just have it all in one place? A Virtual Library for all students where we can contribute and find material for all courses.
+
+## How to contribute?
+
+Dont forget to **STAR** your way out of the repository. Make a fork of this repo and add your changes into this repo. Then submit a pull request and you are all done! Dont forget to **STAR** your way out of the repository.
 
 ## Contributors ✨
 
@@ -36,8 +40,4 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
-
-## How to contribute?
-
-Make a fork of this repo and add your changes into this repo. Then submit a pull request and you are all done!
 
