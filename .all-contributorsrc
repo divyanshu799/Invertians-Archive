@@ -141,6 +141,15 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "skpandey885",
+      "name": "Sachin Pandey",
+      "avatar_url": "https://avatars.githubusercontent.com/u/78532081?v=4",
+      "profile": "https://skpandey885.me/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
