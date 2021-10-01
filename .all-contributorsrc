@@ -168,6 +168,15 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "HimangsKalita",
+      "name": "Himangshu Kalita",
+      "avatar_url": "https://avatars.githubusercontent.com/u/51876341?v=4",
+      "profile": "https://ghosling.github.io/website/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
