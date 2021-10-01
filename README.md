@@ -8,11 +8,11 @@ Admit it, we all have a secret place where we store our notes, books, codes etc.
 
 ## How to contribute?
 
-Dont forget to **STAR** your way out of the repository. Make a fork of this repo and add your changes into this repo. Then submit a pull request and you are all done! Dont forget to **STAR** your way out of the repository.
+Dont forget to **STAR** your way out of the repository. Make a fork of this repo and add your changes into that forked repo. Then submit a pull request and you are all done! Dont forget to **STAR** your way out of the repository.
 
 ## Contributors ✨
 
-Thanks goes to these wonderful people <!-- ([emoji key](https://allcontributors.org/docs/en/emoji-key)): -->
+Thanks goes to these absolutely wonderful people <!-- ([emoji key](https://allcontributors.org/docs/en/emoji-key)): -->
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
