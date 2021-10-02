@@ -1,7 +1,7 @@
 # Welcome Hacktoberfest 2021 Contributors  
 <a>[<img src="https://github.com/agniutkarsh/GitHubGraduation-2021/blob/main/Screenshot%202021-09-15%20at%2011.44.40%20AM.png" width="1000px">](https://agniutkarsh.com)</a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-21-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-22-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 ## Coders-Archive
 Admit it, we all have a secret place where we store our notes, books, codes etc. But wouldn't it be easier to just have it all in one place? A Virtual Library for all students where we can contribute and find material for all courses.
@@ -44,6 +44,9 @@ Thanks goes to these absolutely wonderful people <!-- ([emoji key](https://allco
     <td align="center"><a href="https://ghosling.github.io/website/"><img src="https://avatars.githubusercontent.com/u/51876341?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Himangshu Kalita</b></sub></a><br /><a href="https://github.com/Open-Source-Contributors-IU/coders-archive/commits?author=HimangsKalita" title="Code">💻</a></td>
     <td align="center"><a href="https://www.adgamerx.gq/"><img src="https://avatars.githubusercontent.com/u/48490538?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Aman Dutt</b></sub></a><br /><a href="https://github.com/Open-Source-Contributors-IU/coders-archive/commits?author=adgamerx" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/bkrayaguru931"><img src="https://avatars.githubusercontent.com/u/79391348?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Krishna Rayaguru </b></sub></a><br /><a href="https://github.com/Open-Source-Contributors-IU/coders-archive/commits?author=bkrayaguru931" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/shivamjaiswal64"><img src="https://avatars.githubusercontent.com/u/39907285?v=4?s=100" width="100px;" alt=""/><br /><sub><b>SHIVAM JAISWAL</b></sub></a><br /><a href="https://github.com/Open-Source-Contributors-IU/coders-archive/commits?author=shivamjaiswal64" title="Code">💻</a></td>
   </tr>
 </table>
 
