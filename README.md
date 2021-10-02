@@ -8,7 +8,8 @@ Admit it, we all have a secret place where we store our notes, books, codes etc.
 
 ## How to contribute?
 
-Dont forget to **STAR** your way out of the repository. Make a fork of this repo and add your changes into that forked repo. Then submit a pull request and you are all done! Dont forget to **STAR** your way out of the repository.
+Dont forget to **STAR** your way out of the repository. Make a fork of this repo and add your changes into that forked repo. Then submit a pull request and you are all done! Dont forget to **STAR** your way out of the repository.<br>
+**[Check your Hacktoberfest progress here](https://hacktoberfest.digitalocean.com/profile)**
 
 ## Contributors ✨
 
