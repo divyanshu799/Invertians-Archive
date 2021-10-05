@@ -1,7 +1,7 @@
 # Welcome Hacktoberfest 2021 Contributors  
 <a>[<img src="https://github.com/agniutkarsh/GitHubGraduation-2021/blob/main/Screenshot%202021-09-15%20at%2011.44.40%20AM.png" width="1000px">](https://agniutkarsh.com)</a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-25-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-26-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 ## Coders-Archive
 Admit it, we all have a secret place where we store our notes, books, codes etc. But wouldn't it be easier to just have it all in one place? A Virtual Library for all students where we can contribute and find material for all courses.
@@ -51,6 +51,7 @@ Thanks goes to these absolutely wonderful people <!-- ([emoji key](https://allco
     <td align="center"><a href="https://github.com/AniketNayek3101"><img src="https://avatars.githubusercontent.com/u/75025634?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Aniket Nayek</b></sub></a><br /><a href="https://github.com/Open-Source-Contributors-IU/coders-archive/commits?author=AniketNayek3101" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/trivedi-ayush"><img src="https://avatars.githubusercontent.com/u/80770455?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ayush Trivedi</b></sub></a><br /><a href="https://github.com/Open-Source-Contributors-IU/coders-archive/commits?author=trivedi-ayush" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/SevilleCode"><img src="https://avatars.githubusercontent.com/u/51100173?v=4?s=100" width="100px;" alt=""/><br /><sub><b>SevilleCode</b></sub></a><br /><a href="https://github.com/Open-Source-Contributors-IU/coders-archive/commits?author=SevilleCode" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/arjun-rai-868155191"><img src="https://avatars.githubusercontent.com/u/85013470?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Arjun Rai</b></sub></a><br /><a href="https://github.com/Open-Source-Contributors-IU/coders-archive/commits?author=arjun-rai912" title="Code">💻</a></td>
   </tr>
 </table>
 
