@@ -1,7 +1,7 @@
 # Welcome Hacktoberfest 2021 Contributors  
 <a>[<img src="https://github.com/agniutkarsh/GitHubGraduation-2021/blob/main/Screenshot%202021-09-15%20at%2011.44.40%20AM.png" width="1000px">](https://agniutkarsh.com)</a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-28-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-29-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 ## Coders-Archive
 Admit it, we all have a secret place where we store our notes, books, codes etc. But wouldn't it be easier to just have it all in one place? A Virtual Library for all students where we can contribute and find material for all courses.
@@ -54,6 +54,9 @@ Thanks goes to these absolutely wonderful people <!-- ([emoji key](https://allco
     <td align="center"><a href="https://www.linkedin.com/in/arjun-rai-868155191"><img src="https://avatars.githubusercontent.com/u/85013470?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Arjun Rai</b></sub></a><br /><a href="https://github.com/Open-Source-Contributors-IU/coders-archive/commits?author=arjun-rai912" title="Code">💻</a></td>
     <td align="center"><a href="https://twitter.com/WangOnix"><img src="https://avatars.githubusercontent.com/u/52870180?v=4?s=100" width="100px;" alt=""/><br /><sub><b>WANG-YANG</b></sub></a><br /><a href="https://github.com/Open-Source-Contributors-IU/coders-archive/commits?author=wang-ories" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Harshithardd"><img src="https://avatars.githubusercontent.com/u/79263383?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Harshithardd</b></sub></a><br /><a href="#content-Harshithardd" title="Content">🖋</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/Deep9110"><img src="https://avatars.githubusercontent.com/u/78255449?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Deep9110</b></sub></a><br /><a href="https://github.com/Open-Source-Contributors-IU/coders-archive/commits?author=Deep9110" title="Code">💻</a></td>
   </tr>
 </table>
 
