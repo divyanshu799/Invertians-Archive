@@ -1,7 +1,6 @@
 // Java code for kth smallest element
 // in an array
 import java.util.Arrays;
-import java.util.Collections;
  
 class KthSmallestElement {
     // Function to return k'th smallest
