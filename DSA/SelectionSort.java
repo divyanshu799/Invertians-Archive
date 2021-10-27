@@ -1,4 +1,3 @@
-
 // Java program for implementation of Selection Sort
 
 
@@ -44,4 +43,3 @@ class SelectionSort
 		ob.printArray(arr);
 	}
 }
-
