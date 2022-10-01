@@ -1,5 +1,5 @@
 # Welcome Hacktoberfest 2022 Contributors  
-<a>[<img src="https://github.com/Open-Source-Contributors-IU/coders-archive/blob/main/hacktoberfest2022.png" width="1000px">]
+<img src="https://github.com/Open-Source-Contributors-IU/coders-archive/blob/main/hacktoberfest2022.png" width="1000px">
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-29-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
