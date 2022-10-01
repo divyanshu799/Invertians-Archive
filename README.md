@@ -1,5 +1,5 @@
-# Welcome Hacktoberfest 2021 Contributors  
-<a>[<img src="https://github.com/agniutkarsh/GitHubGraduation-2021/blob/main/Screenshot%202021-09-15%20at%2011.44.40%20AM.png" width="1000px">](https://agniutkarsh.com)</a>
+# Welcome Hacktoberfest 2022 Contributors  
+<a>[<img src="https://github.com/Open-Source-Contributors-IU/coders-archive/blob/main/hacktoberfest2022.png" width="1000px">]
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-29-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
